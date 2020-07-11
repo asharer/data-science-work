@@ -151,6 +151,18 @@ hist(x = carat_vector_2_to_3, breaks = 20)
 **But what about cut? If I filter the dataset by cut, do other patterns emerge?**
 
 ```{r}
+ggplot(diamonds) +
+  geom_bar(mapping = aes(cut)) +
+  labs(title = "Diamonds by cut")
+```
+
+**Observations**:
+
+- The number of diamonds of each cut increases with the cut's quality; there are few Fair cut diamonds in the set compared to the number of Ideal cut diamonds.
+
+**How do the price vs. carat distributions vary by cut?**
+
+```{r}
 ideal_diamonds <- filter(diamonds, cut == "Ideal")
 ggplot(ideal_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
@@ -185,7 +197,10 @@ ggplot(fair_diamonds) +
 
 **Observations**:
 
-- These plots do end up looking quite different. This surprises me a little bit.
+- These plots do end up looking quite different from one another, due in part to the differences in sample size.
+- Diamonds of all cuts can achieve a high price, but the poorer-quality cuts must achieve a much higher carat rating than the higher-quality cuts to do so. 
+- All cuts seem to exhibit the same clustering around certain "friendly" carat values, though further examination would be needed to see if the clusters were consistent from cut to cut below a single carat (it's difficult to tell in these scatterplots; that area of the plot becomes quite dense).
+
 
 # Communication
 <!-- -------------------------------------------------- -->

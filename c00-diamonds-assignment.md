@@ -63,14 +63,14 @@ for more information.
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
     ## ✓ tibble  3.0.1     ✓ dplyr   1.0.0
     ## ✓ tidyr   1.1.0     ✓ stringr 1.4.0
     ## ✓ readr   1.3.1     ✓ forcats 0.5.0
 
-    ## ── Conflicts ──────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -239,6 +239,22 @@ hist(x = carat_vector_2_to_3, breaks = 20)
 emerge?**
 
 ``` r
+ggplot(diamonds) +
+  geom_bar(mapping = aes(cut)) +
+  labs(title = "Diamonds by cut")
+```
+
+![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+**Observations**:
+
+  - The number of diamonds of each cut increases with the cut’s quality;
+    there are few Fair cut diamonds in the set compared to the number of
+    Ideal cut diamonds.
+
+**How do the price vs. carat distributions vary by cut?**
+
+``` r
 ideal_diamonds <- filter(diamonds, cut == "Ideal")
 ggplot(ideal_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
@@ -246,7 +262,7 @@ ggplot(ideal_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 premium_diamonds <- filter(diamonds, cut == "Premium")
@@ -256,7 +272,7 @@ ggplot(premium_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 ``` r
 vgood_diamonds <- filter(diamonds, cut == "Very Good")
@@ -266,7 +282,7 @@ ggplot(vgood_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
 
 ``` r
 good_diamonds <- filter(diamonds, cut == "Good")
@@ -276,7 +292,7 @@ ggplot(good_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-4.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-4.png)<!-- -->
 
 ``` r
 fair_diamonds <- filter(diamonds, cut == "Fair")
@@ -286,12 +302,20 @@ ggplot(fair_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-5.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-5.png)<!-- -->
 
 **Observations**:
 
-  - These plots do end up looking quite different. This surprises me a
-    little bit.
+  - These plots do end up looking quite different from one another, due
+    in part to the differences in sample size.
+  - Diamonds of all cuts can achieve a high price, but the
+    poorer-quality cuts must achieve a much higher carat rating than the
+    higher-quality cuts to do so.
+  - All cuts seem to exhibit the same clustering around certain
+    “friendly” carat values, though further examination would be
+    needed to see if the clusters were consistent from cut to cut below
+    a single carat (it’s difficult to tell in these scatterplots; that
+    area of the plot becomes quite dense).
 
 # Communication
 
