@@ -147,7 +147,8 @@ If I filter the dataset by cut, do other patterns emerge?
 ideal_diamonds <- filter(diamonds, cut == "Ideal")
 ggplot(ideal_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
-  labs(title = "Ideal cut diamonds: prices vs. carat values")
+  labs(title = "Ideal cut diamonds: prices vs. carat values")+
+  xlim(0,5)
 # I don't know how to adjust the axis bounds here, and I wish I could make the x-axis extend to 4.5 or so for all of these; I just don't know how and have not yet bothered to look. :) 
 
 premium_diamonds <- filter(diamonds, cut == "Premium")

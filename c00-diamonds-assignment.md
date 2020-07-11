@@ -234,7 +234,8 @@ If I filter the dataset by cut, do other patterns emerge?
 ideal_diamonds <- filter(diamonds, cut == "Ideal")
 ggplot(ideal_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
-  labs(title = "Ideal cut diamonds: prices vs. carat values")
+  labs(title = "Ideal cut diamonds: prices vs. carat values")+
+  xlim(0,5)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
