@@ -101,7 +101,7 @@ Additionally, I have questions!
 
 ```{r}
 carat_vector <- diamonds$carat
-hist(x = carat_vector, breaks = 20)
+hist(x = carat_vector, main = "Histogram: Diamonds by Carat",  xlab="Carat", breaks = 20)
 ```
 
 **Observations**:
@@ -114,7 +114,7 @@ hist(x = carat_vector, breaks = 20)
 ```{r}
 diamonds_up_to_2 <- filter(diamonds, carat <= 2)
 carat_vector_up_to_2 <- diamonds_up_to_2$carat
-hist(x = carat_vector_up_to_2, breaks = 24) 
+hist(x = carat_vector_up_to_2, main = "Histogram: Diamonds by Carat (up to 2)",  xlab="Carat",  breaks = 24) 
 
 ggplot(diamonds_up_to_2) +
   geom_point(mapping = aes(x = carat, y = price, color = cut)) +
@@ -132,7 +132,7 @@ ggplot(diamonds_up_to_2) +
 ```{r}
 diamonds_2plus <- filter(diamonds, carat >= 2)
 carat_vector_2plus <- diamonds_2plus$carat
-hist(x = carat_vector_2plus, breaks = 24)
+hist(x = carat_vector_2plus, main = "Histogram: Diamonds by Carat (2+)",  xlab="Carat",  breaks = 24)
 ```
 
 There are not many diamonds with a carat value higher than 3 in this dataset. Let's set those aside and focus on the 2-3 carat diamonds.
@@ -140,7 +140,7 @@ There are not many diamonds with a carat value higher than 3 in this dataset. Le
 ```{r}
 diamonds_2_to_3 <- filter(diamonds, carat >= 2 & carat <= 3)
 carat_vector_2_to_3 <- diamonds_2_to_3$carat
-hist(x = carat_vector_2_to_3, breaks = 20)
+hist(x = carat_vector_2_to_3, main = "Histogram: Diamonds by Carat (2-3)",  xlab="Carat", breaks = 20)
 ```
 
 **Observations**:

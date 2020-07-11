@@ -161,7 +161,7 @@ values, and around 1.5 carats?**
 
 ``` r
 carat_vector <- diamonds$carat
-hist(x = carat_vector, breaks = 20)
+hist(x = carat_vector, main = "Histogram: Diamonds by Carat",  xlab="Carat", breaks = 20)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
@@ -179,7 +179,7 @@ hist(x = carat_vector, breaks = 20)
 ``` r
 diamonds_up_to_2 <- filter(diamonds, carat <= 2)
 carat_vector_up_to_2 <- diamonds_up_to_2$carat
-hist(x = carat_vector_up_to_2, breaks = 24) 
+hist(x = carat_vector_up_to_2, main = "Histogram: Diamonds by Carat (up to 2)",  xlab="Carat",  breaks = 24) 
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
@@ -209,7 +209,7 @@ ggplot(diamonds_up_to_2) +
 ``` r
 diamonds_2plus <- filter(diamonds, carat >= 2)
 carat_vector_2plus <- diamonds_2plus$carat
-hist(x = carat_vector_2plus, breaks = 24)
+hist(x = carat_vector_2plus, main = "Histogram: Diamonds by Carat (2+)",  xlab="Carat",  breaks = 24)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
@@ -220,7 +220,7 @@ dataset. Let’s set those aside and focus on the 2-3 carat diamonds.
 ``` r
 diamonds_2_to_3 <- filter(diamonds, carat >= 2 & carat <= 3)
 carat_vector_2_to_3 <- diamonds_2_to_3$carat
-hist(x = carat_vector_2_to_3, breaks = 20)
+hist(x = carat_vector_2_to_3, main = "Histogram: Diamonds by Carat (2-3)",  xlab="Carat", breaks = 20)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
