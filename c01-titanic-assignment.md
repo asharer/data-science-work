@@ -42,7 +42,8 @@ glimpse(df_titanic)
   - Sex (“Male,” “Female”)
   - Age (this is not numerical–it’s a string, e.g. “Child”)
   - Survived (again, this is a string, e.g. “No”)
-  - n (this is the only numerical data in df\_titanic)
+  - n (this is the only numerical data in df\_titanic, and looks to be a
+    count of people of this class & sex & age & survival status)
 
 **q2** Skim the [Wikipedia
 article](https://en.wikipedia.org/wiki/RMS_Titanic) on the RMS Titanic,

@@ -1,7 +1,7 @@
 ---
 title: "Getting Started: Diamonds"
 author: "Angela Sharer"
-date: 2020-
+date: 2020-07-11
 output:
   github_document:
     toc: true
