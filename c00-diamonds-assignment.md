@@ -1,7 +1,7 @@
 Getting Started: Diamonds
 ================
 Angela Sharer
-2020-
+2020-07-11
 
   - [Grading Rubric](#grading-rubric)
       - [Individual](#individual)
