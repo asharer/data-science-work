@@ -99,7 +99,7 @@ Additionally, I have questions!
 
 **First, am I correct that there is clustering around integer carat values, and around 1.5 carats?**
 
-```{r}
+```{r Histogram: Diamonds by Carat}
 carat_vector <- diamonds$carat
 hist(x = carat_vector, main = "Histogram: Diamonds by Carat",  xlab="Carat", breaks = 20)
 ```
@@ -111,11 +111,12 @@ hist(x = carat_vector, main = "Histogram: Diamonds by Carat",  xlab="Carat", bre
 
 **Are there other clusters in the lower-carat value diamonds?**
 
-```{r}
+```{r Histogram of Diamonds by Carat, up to 2 carats}
 diamonds_up_to_2 <- filter(diamonds, carat <= 2)
 carat_vector_up_to_2 <- diamonds_up_to_2$carat
 hist(x = carat_vector_up_to_2, main = "Histogram: Diamonds by Carat (up to 2)",  xlab="Carat",  breaks = 24) 
-
+```
+```{r Plot of Diamonds by carat, up to 2 carats, and cut}
 ggplot(diamonds_up_to_2) +
   geom_point(mapping = aes(x = carat, y = price, color = cut)) +
   labs(title = "Diamond price by carat (up to 2) and cut")
@@ -129,7 +130,7 @@ ggplot(diamonds_up_to_2) +
 
 **Next, what's happening above 2 carats?**
 
-```{r}
+```{r Diamonds by carat, 2 or more carats}
 diamonds_2plus <- filter(diamonds, carat >= 2)
 carat_vector_2plus <- diamonds_2plus$carat
 hist(x = carat_vector_2plus, main = "Histogram: Diamonds by Carat (2+)",  xlab="Carat",  breaks = 24)
@@ -137,7 +138,7 @@ hist(x = carat_vector_2plus, main = "Histogram: Diamonds by Carat (2+)",  xlab="
 
 There are not many diamonds with a carat value higher than 3 in this dataset. Let's set those aside and focus on the 2-3 carat diamonds.
 
-```{r}
+```{r Histogram of diamonds by carat, 2-3 carats}
 diamonds_2_to_3 <- filter(diamonds, carat >= 2 & carat <= 3)
 carat_vector_2_to_3 <- diamonds_2_to_3$carat
 hist(x = carat_vector_2_to_3, main = "Histogram: Diamonds by Carat (2-3)",  xlab="Carat", breaks = 20)
@@ -150,7 +151,7 @@ hist(x = carat_vector_2_to_3, main = "Histogram: Diamonds by Carat (2-3)",  xlab
 
 **But what about cut? If I filter the dataset by cut, do other patterns emerge?**
 
-```{r}
+```{r Bar chart of diamonds by cut}
 ggplot(diamonds) +
   geom_bar(mapping = aes(cut)) +
   labs(title = "Diamonds by cut")
@@ -162,7 +163,7 @@ ggplot(diamonds) +
 
 **How do the price vs. carat distributions vary by cut?**
 
-```{r}
+```{r Plots of prices vs carat values for each cut}
 ideal_diamonds <- filter(diamonds, cut == "Ideal")
 ggplot(ideal_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +

@@ -164,7 +164,7 @@ carat_vector <- diamonds$carat
 hist(x = carat_vector, main = "Histogram: Diamonds by Carat",  xlab="Carat", breaks = 20)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Histogram:%20Diamonds%20by%20Carat-1.png)<!-- -->
 
 **Observations**:
 
@@ -182,7 +182,7 @@ carat_vector_up_to_2 <- diamonds_up_to_2$carat
 hist(x = carat_vector_up_to_2, main = "Histogram: Diamonds by Carat (up to 2)",  xlab="Carat",  breaks = 24) 
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Histogram%20of%20Diamonds%20by%20Carat,%20up%20to%202%20carats-1.png)<!-- -->
 
 ``` r
 ggplot(diamonds_up_to_2) +
@@ -190,7 +190,7 @@ ggplot(diamonds_up_to_2) +
   labs(title = "Diamond price by carat (up to 2) and cut")
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Plot%20of%20Diamonds%20by%20carat,%20up%20to%202%20carats,%20and%20cut-1.png)<!-- -->
 
 **Observations**:
 
@@ -212,7 +212,7 @@ carat_vector_2plus <- diamonds_2plus$carat
 hist(x = carat_vector_2plus, main = "Histogram: Diamonds by Carat (2+)",  xlab="Carat",  breaks = 24)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Diamonds%20by%20carat,%202%20or%20more%20carats-1.png)<!-- -->
 
 There are not many diamonds with a carat value higher than 3 in this
 dataset. Let’s set those aside and focus on the 2-3 carat diamonds.
@@ -223,7 +223,7 @@ carat_vector_2_to_3 <- diamonds_2_to_3$carat
 hist(x = carat_vector_2_to_3, main = "Histogram: Diamonds by Carat (2-3)",  xlab="Carat", breaks = 20)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Histogram%20of%20diamonds%20by%20carat,%202-3%20carats-1.png)<!-- -->
 
 **Observations**:
 
@@ -244,7 +244,7 @@ ggplot(diamonds) +
   labs(title = "Diamonds by cut")
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Bar%20chart%20of%20diamonds%20by%20cut-1.png)<!-- -->
 
 **Observations**:
 
@@ -262,7 +262,7 @@ ggplot(ideal_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Plots%20of%20prices%20vs%20carat%20values%20for%20each%20cut-1.png)<!-- -->
 
 ``` r
 premium_diamonds <- filter(diamonds, cut == "Premium")
@@ -272,7 +272,7 @@ ggplot(premium_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Plots%20of%20prices%20vs%20carat%20values%20for%20each%20cut-2.png)<!-- -->
 
 ``` r
 vgood_diamonds <- filter(diamonds, cut == "Very Good")
@@ -282,7 +282,7 @@ ggplot(vgood_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Plots%20of%20prices%20vs%20carat%20values%20for%20each%20cut-3.png)<!-- -->
 
 ``` r
 good_diamonds <- filter(diamonds, cut == "Good")
@@ -292,7 +292,7 @@ ggplot(good_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-4.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Plots%20of%20prices%20vs%20carat%20values%20for%20each%20cut-4.png)<!-- -->
 
 ``` r
 fair_diamonds <- filter(diamonds, cut == "Fair")
@@ -302,7 +302,7 @@ ggplot(fair_diamonds) +
   xlim(0,5.01)
 ```
 
-![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-6-5.png)<!-- -->
+![](c00-diamonds-assignment_files/figure-gfm/Plots%20of%20prices%20vs%20carat%20values%20for%20each%20cut-5.png)<!-- -->
 
 **Observations**:
 
