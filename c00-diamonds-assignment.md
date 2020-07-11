@@ -154,8 +154,10 @@ But now,
     lower-carat diamonds, and poorer quality cuts dominate the
     higher-carat diamonds.
 
-Additionally, I have questions\! First, am I correct that there is
-clustering around integer carat values, and around 1.5 carats?
+Additionally, I have questions\!
+
+**First, am I correct that there is clustering around integer carat
+values, and around 1.5 carats?**
 
 ``` r
 carat_vector <- diamonds$carat
@@ -164,12 +166,15 @@ hist(x = carat_vector, breaks = 20)
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
-  - This confirms my suspicion about the clustering of diamonds around
-    carat values of 1, 1.5, and 2, but the resolution is a bit low (and
-    I may not be doing my histogram correctly, but I can’t seem to get
-    more than 4 breaks per carat here).
+**Observations**:
 
-Are there other clusters in the lower-carat value diamonds?
+  - This confirms my suspicion about the clustering of diamonds around
+    carat values of 1, 1.5, and 2.
+  - However, the resolution is a bit low (and I may not be doing my
+    histogram correctly, but I can’t seem to get more than 4 breaks per
+    carat here)…
+
+**Are there other clusters in the lower-carat value diamonds?**
 
 ``` r
 diamonds_up_to_2 <- filter(diamonds, carat <= 2)
@@ -187,6 +192,8 @@ ggplot(diamonds_up_to_2) +
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
 
+**Observations**:
+
   - Yes, I think I am seeing multiple clusters when I look more closely
     at the lower-carat value diamonds. There is very clearly one around
     0.3 carats (I wonder if this is a good carat weight for e.g. pave
@@ -197,7 +204,7 @@ ggplot(diamonds_up_to_2) +
     would have expected a normal distribution, I think, not all these
     spikes.)
 
-Next, what’s happening above 2 carats?
+**Next, what’s happening above 2 carats?**
 
 ``` r
 diamonds_2plus <- filter(diamonds, carat >= 2)
@@ -218,6 +225,8 @@ hist(x = carat_vector_2_to_3, breaks = 20)
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
+**Observations**:
+
   - In my histogram, I see the cluster of diamonds at 2 carats, and it
     looks like I do have a smallish cluster at 2.5, but this is so
     subtle as to perhaps be noise–the trend seems stronger in the 1-2
@@ -226,27 +235,25 @@ hist(x = carat_vector_2_to_3, breaks = 20)
     range of less than 2 carats, 1.5 is a substantial jump from 1, and
     thus feels more worthwhile…?
 
-**But what about cut?**
-
-If I filter the dataset by cut, do other patterns emerge?
+**But what about cut? If I filter the dataset by cut, do other patterns
+emerge?**
 
 ``` r
 ideal_diamonds <- filter(diamonds, cut == "Ideal")
 ggplot(ideal_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
-  labs(title = "Ideal cut diamonds: prices vs. carat values")+
-  xlim(0,5)
+  labs(title = "Ideal cut diamonds: prices vs. carat values") +
+  xlim(0,5.01)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
-# I don't know how to adjust the axis bounds here, and I wish I could make the x-axis extend to 4.5 or so for all of these; I just don't know how and have not yet bothered to look. :) 
-
 premium_diamonds <- filter(diamonds, cut == "Premium")
 ggplot(premium_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
-  labs(title = "Premium cut diamonds: prices vs. carat values")
+  labs(title = "Premium cut diamonds: prices vs. carat values") +
+  xlim(0,5.01)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
@@ -255,7 +262,8 @@ ggplot(premium_diamonds) +
 vgood_diamonds <- filter(diamonds, cut == "Very Good")
 ggplot(vgood_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
-  labs(title = "Very Good cut diamonds: prices vs. carat values")
+  labs(title = "Very Good cut diamonds: prices vs. carat values") +
+  xlim(0,5.01)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
@@ -264,7 +272,8 @@ ggplot(vgood_diamonds) +
 good_diamonds <- filter(diamonds, cut == "Good")
 ggplot(good_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
-  labs(title = "Good cut diamonds: prices vs. carat values")
+  labs(title = "Good cut diamonds: prices vs. carat values") +
+  xlim(0,5.01)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-4.png)<!-- -->
@@ -273,7 +282,8 @@ ggplot(good_diamonds) +
 fair_diamonds <- filter(diamonds, cut == "Fair")
 ggplot(fair_diamonds) +
   geom_point(mapping = aes(x = carat, y = price)) +
-  labs(title = "Fair cut diamonds: prices vs. carat values")
+  labs(title = "Fair cut diamonds: prices vs. carat values") +
+  xlim(0,5.01)
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/unnamed-chunk-5-5.png)<!-- -->
