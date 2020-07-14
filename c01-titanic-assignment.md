@@ -85,11 +85,72 @@ below.
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
+ggplot(df_titanic) +
+  geom_col(mapping = aes(x = Class, y = n, fill = Sex))
 ```
+
+![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20class-1.png)<!-- -->
 
 **Observations**:
 
-  - Write your observations here
+  - The Titanic had more 3rd class passengers than 1st and 2nd class
+    passengers combined.
+  - 2nd class is the smallest of the classes. I would have expected 2nd
+    to be larger than 1st, but perhaps, as a luxury liner, Titanic was
+    optimizing for a relatively large 1st class, compared to 2nd?
+  - There were more crew members than any single passenger class (but as
+    a whole, there were more passengers than crew).
+  - The vast majority of the crew were male.
+  - Most passengers were male.
+
+<!-- end list -->
+
+``` r
+## TASK: Visualize counts against `Class` and `Sex`
+ggplot(df_titanic) +
+  geom_col(mapping = aes(x = Class, y = n, fill = Sex), position = "fill")
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20class%20proportion-1.png)<!-- -->
+
+**Observations**:
+
+  - 1st class comes the closest of any other class group to an even
+    balance of males and females, but it too had more males than
+    females.
+  - I’m wondering if 1st class passengers were more likely to be couples
+    or families for some reason, and 2nd and 3rd class had more single
+    men–what social factors would have caused this?
+
+<!-- end list -->
+
+``` r
+## TASK: Visualize counts against `Class` and `Sex`
+
+ggplot(df_titanic) +
+  geom_col(mapping = aes(x = Sex, y = n, fill = Class))
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20sex-1.png)<!-- -->
+
+**Observations**:
+
+  - The ship’s male crew members alone outnumber the women and girls.
+
+<!-- end list -->
+
+``` r
+## TASK: Visualize counts against `Class` and `Sex`
+
+ggplot(df_titanic) +
+  geom_col(mapping = aes(x = Sex, y = n, fill = Class), position = "fill")
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20sex,%20by%20proportion-1.png)<!-- -->
+
+**Observations**:
+
+  - About half of the men/boys on the Titanic were crew members.
 
 # Deeper Look
 
