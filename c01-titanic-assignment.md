@@ -5,6 +5,7 @@ Angela Sharer
 
   - [First Look](#first-look)
   - [Deeper Look](#deeper-look)
+      - [Conclusions](#conclusions)
       - [Purpose and Reading](#purpose-and-reading)
   - [Grading Rubric](#grading-rubric)
       - [Individual](#individual)
@@ -88,16 +89,17 @@ below.
 df_titanic %>%
   filter(Survived == "Yes") %>%
   ggplot() +
-    geom_col(mapping = aes(x = Class, y = n, fill = Sex))
+    geom_col(mapping = aes(x = Class, y = n, fill = Sex)) +
+    labs(
+      title = "Survivors (passengers and crew) by class and sex", 
+      y = "Number of survivors"
+    )
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20class-1.png)<!-- -->
 
 **Observations**:
 
-  - Most survivors from 1st and 2nd class were women.
-  - 3rd class survivors were more balanced in gender.
-  - Crew survivors were mostly male.
   - More crew survived than any other class, which surprises me
     slightly. (Will need to compare totals for these groups.)
   - Among paying passengers, more 1st class passengers survived than
@@ -105,6 +107,9 @@ df_titanic %>%
   - More 3rd class passengers survived than 2nd class passengers, which
     also surprises me slightly. (Will need to compare totals for these
     groups.)
+  - Most survivors from 1st and 2nd class were women.
+  - 3rd class survivors were more balanced in gender.
+  - Crew survivors were mostly male.
 
 <!-- end list -->
 
@@ -113,41 +118,73 @@ df_titanic %>%
 df_titanic %>%
   filter(Survived == "Yes") %>%
   ggplot() +
-    geom_col(mapping = aes(x = Class, y = n, fill = Sex), position = "fill")
-```
-
-![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20class%20proportion-1.png)<!-- -->
-
-**Observations**: - Proportionally, women in the richer classes (1st and
-2nd) made up more of the survivors than did those from 3rd class, and
-much more than the crew. - Without looking at the base proportions,
-though, it’s not clear what this means.
-
-``` r
-## TASK: Visualize counts against `Class` and `Sex`
-df_titanic %>%
-  filter(Survived == "Yes") %>%
-  ggplot() +
-    geom_col(mapping = aes(x = Sex, y = n, fill = Class))
+    geom_col(mapping = aes(x = Sex, y = n, fill = Class)) +
+    labs(
+      title = "Survivors (passengers and crew) by sex and class", 
+      y = "Number of survivors"
+    )
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20sex-1.png)<!-- -->
 
 **Observations**:
 
-  - Ultimately, more men than women survived, but not by much.
-  - If we exclude crew members, the reverse would be true: female
-    survivors among passengers far outnumber the male survivors in this
-    group. (It’s just the male crew members that throw things off here.)
+  - Ultimately, more men than women survived, but not by much. (How does
+    this compare to the base populations on the ship, though?)
 
 <!-- end list -->
+
+``` r
+df_titanic %>%
+  filter(Survived == "Yes", Class != "Crew") %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = n, fill = Class)) +
+    labs(
+      title = "Surviving passengers by sex and class",
+      y = "Number of survivors"
+    )
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20sex,%20no%20crew-1.png)<!-- -->
+
+**Observations**:
+
+  - If we exclude crew members, the reverse is true: female survivors
+    among passengers far outnumber the male survivors in this group.
+    (It’s just the male crew members that throw things off in the
+    previous visualization.)
+
+<!-- end list -->
+
+``` r
+## TASK: Visualize counts against `Class` and `Sex`
+df_titanic %>%
+  filter(Survived == "Yes") %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Class, y = n, fill = Sex), position = "fill") +
+    labs(
+      title = "Proportion of the sexes among survivors of each class", 
+      y = "Proportion of survivors per class"
+    )
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20class%20proportion-1.png)<!-- -->
+
+**Observations**: - Proportionally, women in the richer classes (1st and
+2nd) made up more of the survivors from those classes than did those
+from 3rd class, and much more than the crew. - Without looking at the
+base proportions, though, it’s not clear what this means.
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
 df_titanic %>% 
   filter(Survived == "Yes") %>%
   ggplot() +
-    geom_col(mapping = aes(x = Sex, y = n, fill = Class), position = "fill")
+    geom_col(mapping = aes(x = Sex, y = n, fill = Class), position = "fill") +
+    labs(
+      title = "Proportion of class among survivors of each sex", 
+      y = "Proportion of survivors per sex"
+    )
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20sex,%20by%20proportion-1.png)<!-- -->
@@ -203,9 +240,36 @@ df_prop
 `n`. Document your observations, and note any new/different observations
 you make in comparison with q3.
 
+``` r
+df_prop %>%
+  filter(Survived == "Yes", !is.na(Prop)) %>%
+  ggplot() +
+    geom_boxplot(mapping = aes(x = Class, y = Prop, color = Sex)) +
+    labs(
+      title = "Proportion of survivors by class and sex", 
+      y = "Proportion of survivors"
+    )
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q4-task%20-%20class%20and%20sex%20proportions-1.png)<!-- -->
+
 **Observations**:
 
-  - Write your observations here.
+  - Most of the women and girls in first class survived.
+  - Women and girls in second class were slightly less likely to survive
+    than those in first class, but ultimately most of them did survive.
+  - Most women crew members survived, and they were much more likely to
+    survive than women and girls in 3rd class, and than male crew
+    members.
+  - Meanwhile, male crew members were about as likely to survive as the
+    men and boys in 3rd class (and neither of those groups were very
+    likely to survive).
+  - In all classes, women and girls were generally more likely to
+    survive than men and boys of the same class.
+  - There was substantial variation in male survival in both the first
+    and second classes; I would hypothesize that the children (boys)
+    were much more likely to survive than the adult men.
+  - Most people of any age or gender in 3rd class did not survive.
 
 **q5** Create a plot showing the group-proportion of passengers who
 *did* survive, along with aesthetics for `Class`, `Sex`, *and* `Age`.
@@ -214,9 +278,86 @@ Document your observations below.
 *Hint*: Don’t forget that you can use `facet_grid` to help consider
 additional variables\!
 
+``` r
+df_prop %>%
+  filter(Survived == "Yes", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(
+      mapping = aes(x = Class, y = Prop, fill = Sex), 
+      position = "dodge"
+    ) +
+    facet_grid(. ~ Age)
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q5-task%20survivors%20by%20class,%20sex,%20and%20age,%202%20x%201%20grid-1.png)<!-- -->
+
 **Observations**:
 
-  - Write your observations here.
+  - In 1st and 2nd class, almost all children survived, and they
+    out-survived adults of any sex/class.
+
+<!-- end list -->
+
+``` r
+df_prop %>%
+  filter(Survived == "Yes", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = Prop, fill = Sex), position = "dodge") +
+    facet_grid(Class ~ Age)
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q5-task%20survivors%20by%20class,%20sex,%20and%20age,%202%20x%204%20grid-1.png)<!-- -->
+
+**Observations**:
+
+  - In 1st and 2nd class, almost all children survived, and they
+    out-survived adults of any sex/class.
+  - Boys were always more likely to survive than men of the same class.
+
+<!-- end list -->
+
+``` r
+df_prop %>%
+  filter(Survived == "Yes", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(
+      mapping = aes(x = Age, y = Prop, color = Age), 
+      position = "dodge"
+    ) +
+    facet_grid(Sex ~ Class)
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q5-task%20survivors%20by%20class,%20sex,%20and%20age,%202%20x%204%20grid%20focused%20on%20age%20comparisons-1.png)<!-- -->
+
+**Observations**:
+
+  - In 1st and 2nd class, almost all children survived, and they
+    out-survived adults of any sex/class.
+  - Boys were always more likely to survive than men of the same class
+    (except the crew, which had no children).
+  - However, adult women slightly out-survived girls in 3rd class.
+
+## Conclusions
+
+  - The best way to survive the Titanic overall was to be a wealthy
+    child (1st or 2nd class).
+  - Other than wealthy children, wealthy women were most likely to
+    survive (1st or 2nd class, but especially 1st).
+  - After wealthy children and women, female crew members were also
+    relatively likely to survive.
+  - Among women and girls, the worst chances for survival were in 3rd
+    class, but it was still better to be female than male there.
+  - Adult men’s survival chances were generally not good, but among this
+    group, the best chance for survival was in first class, followed by
+    being a crew member. Interestingly, the worst class for adult men
+    was 2nd.
+  - Other than adult men (who survived more in 3rd class than in 2nd),
+    3rd class was universally the worst class to be in for each age/sex
+    group.
+  - As a sidebar social commentary, Titanic is a nearly perfect example
+    of how catastrophic events always hit the poor the hardest. The
+    children’s survival rates in 3rd class were abysmal, and perfect or
+    nearly perfect in 1st and 2nd class. This is tragic.
 
 ## Purpose and Reading
 
