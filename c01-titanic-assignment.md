@@ -85,72 +85,77 @@ below.
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
-ggplot(df_titanic) +
-  geom_col(mapping = aes(x = Class, y = n, fill = Sex))
+df_titanic %>%
+  filter(Survived == "Yes") %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Class, y = n, fill = Sex))
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20class-1.png)<!-- -->
 
 **Observations**:
 
-  - The Titanic had more 3rd class passengers than 1st and 2nd class
-    passengers combined.
-  - 2nd class is the smallest of the classes. I would have expected 2nd
-    to be larger than 1st, but perhaps, as a luxury liner, Titanic was
-    optimizing for a relatively large 1st class, compared to 2nd?
-  - There were more crew members than any single passenger class (but as
-    a whole, there were more passengers than crew).
-  - The vast majority of the crew were male.
-  - Most passengers were male.
+  - Most survivors from 1st and 2nd class were women.
+  - 3rd class survivors were more balanced in gender.
+  - Crew survivors were mostly male.
+  - More crew survived than any other class, which surprises me
+    slightly. (Will need to compare totals for these groups.)
+  - Among paying passengers, more 1st class passengers survived than
+    from either other class.
+  - More 3rd class passengers survived than 2nd class passengers, which
+    also surprises me slightly. (Will need to compare totals for these
+    groups.)
 
 <!-- end list -->
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
-ggplot(df_titanic) +
-  geom_col(mapping = aes(x = Class, y = n, fill = Sex), position = "fill")
+df_titanic %>%
+  filter(Survived == "Yes") %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Class, y = n, fill = Sex), position = "fill")
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20class%20proportion-1.png)<!-- -->
 
-**Observations**:
-
-  - 1st class comes the closest of any other class group to an even
-    balance of males and females, but it too had more males than
-    females.
-  - I’m wondering if 1st class passengers were more likely to be couples
-    or families for some reason, and 2nd and 3rd class had more single
-    men–what social factors would have caused this?
-
-<!-- end list -->
+**Observations**: - Proportionally, women in the richer classes (1st and
+2nd) made up more of the survivors than did those from 3rd class, and
+much more than the crew. - Without looking at the base proportions,
+though, it’s not clear what this means.
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
-
-ggplot(df_titanic) +
-  geom_col(mapping = aes(x = Sex, y = n, fill = Class))
+df_titanic %>%
+  filter(Survived == "Yes") %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = n, fill = Class))
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20sex-1.png)<!-- -->
 
 **Observations**:
 
-  - The ship’s male crew members alone outnumber the women and girls.
+  - Ultimately, more men than women survived, but not by much.
+  - If we exclude crew members, the reverse would be true: female
+    survivors among passengers far outnumber the male survivors in this
+    group. (It’s just the male crew members that throw things off here.)
 
 <!-- end list -->
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
-
-ggplot(df_titanic) +
-  geom_col(mapping = aes(x = Sex, y = n, fill = Class), position = "fill")
+df_titanic %>% 
+  filter(Survived == "Yes") %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = n, fill = Class), position = "fill")
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task%20-%20class%20and%20sex%20counts,%20focused%20on%20sex,%20by%20proportion-1.png)<!-- -->
 
 **Observations**:
 
-  - About half of the men/boys on the Titanic were crew members.
+  - Proportionally, most female survivors came from 1st or 2nd class,
+    whereas most male survivors were crew.
 
 # Deeper Look
 
