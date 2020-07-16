@@ -116,7 +116,7 @@ df_titanic %>%
     geom_col(mapping = aes(x = Class, y = n, fill = Sex), position = "fill") +
     labs(
       title = "Proportion of the sexes among survivors of each class", 
-      y = "Proportion of survivors per class"
+      y = "Proportion of survivors"
     )
 ```
 
@@ -132,7 +132,7 @@ df_titanic %>%
     geom_col(mapping = aes(x = Sex, y = n, fill = Class), position = "fill") +
     labs(
       title = "Proportion of class among survivors of each sex", 
-      y = "Proportion of survivors per sex"
+      y = "Proportion of survivors"
     )
 ```
 
@@ -199,7 +199,11 @@ df_prop %>%
       mapping = aes(x = Class, y = Prop, fill = Sex), 
       position = "dodge"
     ) +
-    facet_grid(. ~ Age)
+    facet_grid(. ~ Age) +
+    labs(
+      title = "Proportion of survivors by age, class, and sex", 
+      y = "Proportion of survivors"
+    )
 ```
 
 **Observations**:
@@ -212,7 +216,11 @@ df_prop %>%
   filter(Survived == "Yes", !is.na(Prop)) %>%
   ggplot() +
     geom_col(mapping = aes(x = Sex, y = Prop, fill = Sex), position = "dodge") +
-    facet_grid(Class ~ Age)
+    facet_grid(Class ~ Age) +
+    labs(
+      title = "Proportion of survivors by age, sex, and class", 
+      y = "Proportion of survivors"
+    )
 ```
 
 **Observations**:
@@ -225,10 +233,15 @@ df_prop %>%
   filter(Survived == "Yes", !is.na(Prop)) %>%
   ggplot() +
     geom_col(
-      mapping = aes(x = Age, y = Prop, color = Age), 
+      mapping = aes(x = Age, y = Prop, fill = Age), 
       position = "dodge"
     ) +
-    facet_grid(Sex ~ Class)
+    facet_grid(Sex ~ Class) +
+    scale_fill_brewer(palette="Set2") +
+    labs(
+      title = "Proportion of survivors by class, age, and sex", 
+      y = "Proportion of survivors"
+    )
 ```
 
 **Observations**:
@@ -247,6 +260,67 @@ df_prop %>%
 - Adult men's survival chances were generally not good, but among this group, the best chance for survival was in first class, followed by being a crew member. Interestingly, the worst class for adult men was 2nd. 
 - Other than adult men (who survived more in 3rd class than in 2nd), 3rd class was universally the worst class to be in for each age/sex group.
 - As a sidebar social commentary, Titanic is a nearly perfect example of how catastrophic events always hit the poor the hardest. The children's survival rates in 3rd class were abysmal, and perfect or nearly perfect in 1st and 2nd class. This is tragic.
+
+
+## Appendix
+
+More filtered versions of the above graphs, to support our team observations in a more targeted manner. 
+
+```{r q5-task child survivors by class, sex}
+df_prop %>%
+  filter(Survived == "Yes", Age == "Child", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(
+      mapping = aes(x = Class, y = Prop, fill = Sex), 
+      position = "dodge"
+    ) +
+    labs(
+      title = "Proportion of children who survived by class and sex", 
+      y = "Proportion of children who survived"
+    )
+```
+
+
+```{r q5-task adult survivors by class, sex}
+df_prop %>%
+  filter(Survived == "Yes", Age == "Adult", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = Prop, fill = Sex), position = "dodge") +
+    facet_grid(. ~ Class) +
+    labs(
+      title = "Proportion of adult survivors by sex and class", 
+      y = "Proportion of survivors"
+    )
+```
+
+```{r q5-task adult passenger survivors by class, sex}
+df_prop %>%
+  filter(Survived == "Yes", Age == "Adult", Class != "Crew", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = Prop, fill = Sex), position = "dodge") +
+    facet_grid(. ~ Class) +
+    labs(
+      title = "Proportion of surviving adult passengers by sex and class", 
+      y = "Proportion of survivors"
+    )
+```
+
+```{r q5-task passenger survivors by class, sex, and age, 2 x 3 grid focused on age comparisons}
+df_prop %>%
+  filter(Survived == "Yes", Class != "Crew", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(
+      mapping = aes(x = Age, y = Prop, fill = Age), 
+      position = "dodge"
+    ) +
+    facet_grid(Sex ~ Class) +
+    scale_fill_brewer(palette="Set2") +
+    labs(
+      title = "Proportion of surviving passengers by class, age, and sex", 
+      y = "Proportion of survivors"
+    )
+```
+
 
 
 

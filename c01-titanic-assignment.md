@@ -6,6 +6,7 @@ Angela Sharer
   - [First Look](#first-look)
   - [Deeper Look](#deeper-look)
       - [Conclusions](#conclusions)
+      - [Appendix](#appendix)
       - [Purpose and Reading](#purpose-and-reading)
   - [Grading Rubric](#grading-rubric)
       - [Individual](#individual)
@@ -164,7 +165,7 @@ df_titanic %>%
     geom_col(mapping = aes(x = Class, y = n, fill = Sex), position = "fill") +
     labs(
       title = "Proportion of the sexes among survivors of each class", 
-      y = "Proportion of survivors per class"
+      y = "Proportion of survivors"
     )
 ```
 
@@ -183,7 +184,7 @@ df_titanic %>%
     geom_col(mapping = aes(x = Sex, y = n, fill = Class), position = "fill") +
     labs(
       title = "Proportion of class among survivors of each sex", 
-      y = "Proportion of survivors per sex"
+      y = "Proportion of survivors"
     )
 ```
 
@@ -286,7 +287,11 @@ df_prop %>%
       mapping = aes(x = Class, y = Prop, fill = Sex), 
       position = "dodge"
     ) +
-    facet_grid(. ~ Age)
+    facet_grid(. ~ Age) +
+    labs(
+      title = "Proportion of survivors by age, class, and sex", 
+      y = "Proportion of survivors"
+    )
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q5-task%20survivors%20by%20class,%20sex,%20and%20age,%202%20x%201%20grid-1.png)<!-- -->
@@ -303,7 +308,11 @@ df_prop %>%
   filter(Survived == "Yes", !is.na(Prop)) %>%
   ggplot() +
     geom_col(mapping = aes(x = Sex, y = Prop, fill = Sex), position = "dodge") +
-    facet_grid(Class ~ Age)
+    facet_grid(Class ~ Age) +
+    labs(
+      title = "Proportion of survivors by age, sex, and class", 
+      y = "Proportion of survivors"
+    )
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q5-task%20survivors%20by%20class,%20sex,%20and%20age,%202%20x%204%20grid-1.png)<!-- -->
@@ -321,10 +330,15 @@ df_prop %>%
   filter(Survived == "Yes", !is.na(Prop)) %>%
   ggplot() +
     geom_col(
-      mapping = aes(x = Age, y = Prop, color = Age), 
+      mapping = aes(x = Age, y = Prop, fill = Age), 
       position = "dodge"
     ) +
-    facet_grid(Sex ~ Class)
+    facet_grid(Sex ~ Class) +
+    scale_fill_brewer(palette="Set2") +
+    labs(
+      title = "Proportion of survivors by class, age, and sex", 
+      y = "Proportion of survivors"
+    )
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q5-task%20survivors%20by%20class,%20sex,%20and%20age,%202%20x%204%20grid%20focused%20on%20age%20comparisons-1.png)<!-- -->
@@ -358,6 +372,73 @@ df_prop %>%
     of how catastrophic events always hit the poor the hardest. The
     children’s survival rates in 3rd class were abysmal, and perfect or
     nearly perfect in 1st and 2nd class. This is tragic.
+
+## Appendix
+
+More filtered versions of the above graphs, to support our team
+observations in a more targeted manner.
+
+``` r
+df_prop %>%
+  filter(Survived == "Yes", Age == "Child", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(
+      mapping = aes(x = Class, y = Prop, fill = Sex), 
+      position = "dodge"
+    ) +
+    labs(
+      title = "Proportion of children who survived by class and sex", 
+      y = "Proportion of children who survived"
+    )
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q5-task%20child%20survivors%20by%20class,%20sex-1.png)<!-- -->
+
+``` r
+df_prop %>%
+  filter(Survived == "Yes", Age == "Adult", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = Prop, fill = Sex), position = "dodge") +
+    facet_grid(. ~ Class) +
+    labs(
+      title = "Proportion of adult survivors by sex and class", 
+      y = "Proportion of survivors"
+    )
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q5-task%20adult%20survivors%20by%20class,%20sex-1.png)<!-- -->
+
+``` r
+df_prop %>%
+  filter(Survived == "Yes", Age == "Adult", Class != "Crew", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(mapping = aes(x = Sex, y = Prop, fill = Sex), position = "dodge") +
+    facet_grid(. ~ Class) +
+    labs(
+      title = "Proportion of surviving adult passengers by sex and class", 
+      y = "Proportion of survivors"
+    )
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q5-task%20adult%20passenger%20survivors%20by%20class,%20sex-1.png)<!-- -->
+
+``` r
+df_prop %>%
+  filter(Survived == "Yes", Class != "Crew", !is.na(Prop)) %>%
+  ggplot() +
+    geom_col(
+      mapping = aes(x = Age, y = Prop, fill = Age), 
+      position = "dodge"
+    ) +
+    facet_grid(Sex ~ Class) +
+    scale_fill_brewer(palette="Set2") +
+    labs(
+      title = "Proportion of surviving passengers by class, age, and sex", 
+      y = "Proportion of survivors"
+    )
+```
+
+![](c01-titanic-assignment_files/figure-gfm/q5-task%20passenger%20survivors%20by%20class,%20sex,%20and%20age,%202%20x%203%20grid%20focused%20on%20age%20comparisons-1.png)<!-- -->
 
 ## Purpose and Reading
 
