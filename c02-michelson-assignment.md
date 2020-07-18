@@ -1,7 +1,7 @@
 Michelson Speed-of-light Measurements
 ================
 Angela Sharer
-2020-07-16
+2020-07-18
 
   - [Bibliography](#bibliography)
   - [Grading Rubric](#grading-rubric)
@@ -112,8 +112,15 @@ df_q1 %>%
 | 2            | 39 |     299858.5 |
 | 1            | 15 |     299808.0 |
 
-**Observations**: - Write your observations here\! - Why might your
-table differ from Michelson’s?
+**Observations**: - With increasing distinctness (from 1, which is poor,
+to 3, which is good), the mean velocity increases. - This increase is
+greater from 1 to 2 than from 2 to 3. - But actually, all of the mean
+velocities represented here are higher than the true speed of light in a
+vacuum. - This table might differ from Michelson’s due to approximations
+being made during the process of computing the mean in R; I remember a
+demonstrative example involving the square root of 2 being subtracted
+from itself or similar, and a resulting small error. (Or perhaps
+Michelson made other adjustments?)
 
 The `Velocity` values in the dataset are the speed of light *in air*;
 Michelson introduced a couple of adjustments to estimate the speed of
@@ -193,8 +200,8 @@ Error_v_Uncertainty
 
   - The error between Michelson’s estimate and the true value is 151.542
     km/s; Michelson’s estimate was on the high side.
-  - Michelson estimated his uncertainty to be 51 km/s; the actual error
-    was almost 3 times greater than his uncertainty.
+  - Michelson estimated his uncertainty to be \(\pm 51\) km/s; the
+    actual error was almost 3 times this value.
 
 **q4** You have access to a few other variables. Construct a few
 visualizations of `VelocityVacuum` against these other factors. Are
@@ -204,21 +211,141 @@ between Michelson’s estimate and `LIGHTSPEED_VACUUM`?
 ``` r
 df_q2 %>%
   ggplot() +
-    geom_point(mapping = aes(x = Temp, y = VelocityVacuum, color = Distinctness)) +
-    geom_smooth(mapping = aes(x = Temp, y = VelocityVacuum))
+    geom_point(
+      mapping = aes(x = Temp, y = VelocityVacuum, color = Distinctness)
+    ) +
+    geom_smooth(mapping = aes(x = Temp, y = VelocityVacuum)) +
+    labs(
+      title = "Estimated Velocity in a Vacuum vs. Temperature", 
+      y = "Estimated Velocity in a Vacuum (km/s)"
+    )
 ```
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
 ![](c02-michelson-assignment_files/figure-gfm/q4-1.png)<!-- -->
 
+**Observations**:
+
+  - There seems to be a relationship between temperature and observed
+    velocity; higher temperatures lead to higher observed velocities.
+
+<!-- end list -->
+
+``` r
+df_lowtemps <-
+  filter(df_q2, Temp < 60) %>%
+  arrange(Velocity)
+
+df_lowtemps
+```
+
+    ## # A tibble: 3 x 5
+    ##   Date                Distinctness  Temp Velocity VelocityVacuum
+    ##   <dttm>              <fct>        <dbl>    <dbl>          <dbl>
+    ## 1 1879-06-18 00:00:00 1               59   299620         299712
+    ## 2 1879-06-18 00:00:00 1               58   299720         299812
+    ## 3 1879-06-18 00:00:00 1               58   299720         299812
+
+``` r
+df_hightemps <-
+  filter(df_q2, Temp >= 90) %>%
+  arrange(Velocity)
+
+df_hightemps
+```
+
+    ## # A tibble: 5 x 5
+    ##   Date                Distinctness  Temp Velocity VelocityVacuum
+    ##   <dttm>              <fct>        <dbl>    <dbl>          <dbl>
+    ## 1 1879-06-23 00:00:00 3               90   299860         299952
+    ## 2 1879-06-23 00:00:00 3               90   299880         299972
+    ## 3 1879-06-23 00:00:00 3               90   299890         299982
+    ## 4 1879-06-10 00:00:00 2               90   299930         300022
+    ## 5 1879-06-10 00:00:00 2               90   299980         300072
+
+**Observations**:
+
+  - At the lowest temperatures (less than 60 degrees Fahrenheit), we
+    observe some of the lowest velocities in the dataset, with estimates
+    for the velocity in a vacuum ranging from 299,712 to 299,812 km/s.
+    (The true speed of light in a vacuum falls in this range.)
+  - At the highest temperatures (90 degrees Fahrenheit), all velocities
+    measured are higher than this range, with velocities in a vacuum
+    ranging from 299,952 to 300,072 km/s.
+  - Therefore, there may be a relationship (and indeed the physics of
+    light moving through a medium, and the effects of temperature on the
+    properties of our atmosphere would confirm this) between temperature
+    and the speed of light. This dataset is limited (only 100
+    observations), so it is difficult to measure from this alone, but it
+    certainly would have been interesting to see the experiment run
+    during the winter, rather than June and July, and observe the
+    results during colder temperatures.
+
+<!-- end list -->
+
 ``` r
 df_q2 %>%
   ggplot() +
-    geom_boxplot(mapping = aes(x = Distinctness, y = VelocityVacuum))
+    geom_boxplot(mapping = aes(x = Distinctness, y = VelocityVacuum)) +
+    labs(
+      title = "Estimated Velocity in a Vacuum by Distinctness", 
+      y = "Estimated Velocity in a Vacuum (km/s)"
+    )
 ```
 
-![](c02-michelson-assignment_files/figure-gfm/q4-2.png)<!-- -->
+![](c02-michelson-assignment_files/figure-gfm/q4%20boxplot-1.png)<!-- -->
+
+**Observations**:
+
+  - As observed in the tables, increasing distinctness also yields to an
+    increase in mean velocity.
+  - Only the poor and fair distinctness observations yield estimates for
+    the velocity in a vacuum that cover the range including the true
+    velocity.
+
+<!-- end list -->
+
+``` r
+df_q2 %>%
+  ggplot() +
+    geom_point(mapping = aes(x = Date, y = VelocityVacuum, color = Distinctness)) +
+    geom_smooth(mapping = aes(x = Date, y = VelocityVacuum)) +
+    labs(
+      title = "Estimated Velocity in a Vacuum by Date and Distinctness", 
+      y = "Estimated Velocity in a Vacuum (km/s)"
+    )
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+![](c02-michelson-assignment_files/figure-gfm/q4%20velocity%20estimates%20by%20date%20and%20distinctness-1.png)<!-- -->
+
+**Observations**:
+
+  - All poor distinctness observations took place in the first half of
+    the experiment, June 12 - June 18.
+  - Earlier measurements skewed a bit higher than later measurements.
+
+<!-- end list -->
+
+``` r
+df_q2 %>%
+  ggplot() +
+    geom_point(mapping = aes(x = Date, y = Temp)) +
+    geom_smooth(mapping = aes(x = Date, y = Temp)) +
+    labs(title = "Date and Temperature", y = "Temperature (degrees Fahrenheit)")
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+![](c02-michelson-assignment_files/figure-gfm/q4%20date%20and%20Temp-1.png)<!-- -->
+
+**Observations**:
+
+  - Temperatures (as measured during data collection only) were lowest
+    at the beginning of the experiment, and again for a few days during
+    the middle of the experiment.
 
 ## Bibliography
 
