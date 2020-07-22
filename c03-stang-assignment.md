@@ -270,21 +270,15 @@ df_stang_long %>%
 
 ![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness-1.png)<!-- -->
 
-``` r
-df_stang_long %>%
-  ggplot() +
-  geom_histogram(mapping = aes(x = mu, fill = as.factor(thick))) +
-  scale_fill_brewer(palette="GnBu", name = "Thickness (in)")  +
-  labs(
-    title = "Poisson's Ratio and Thickness",
-    x = "Poisson's Ratio (mu)",
-    y = "Count"
-    )
-```
+**Observations**:
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+  - The thickest aluminum (0.081") has the lowest modulus of
+    elasticity–all 10,100 or less, whereas all other thicknesses were
+    greater than 10,250.
+  - The thinnest aluminum (0.022") has the highest modulus of
+    elasticity–all 10,500 or greater.
 
-![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness-2.png)<!-- -->
+<!-- end list -->
 
 ``` r
 df_stang_long %>%
@@ -300,15 +294,37 @@ df_stang_long %>%
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness-3.png)<!-- -->
+![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness%20and%20E-1.png)<!-- -->
 
 **Observations**:
 
-  - The thickest aluminum (0.081") has the lowest modulus of
-    elasticity–all 10,100 or less, whereas all other thicknesses were
-    greater than 10,250.
-  - The thinnest aluminum (0.022") has the highest modulus of
-    elasticity–all 10,500 or greater.
+  - The relationship between thickness and the modulus of elasticity is
+    even clearer here.
+
+<!-- end list -->
+
+``` r
+df_stang_long %>%
+  ggplot() +
+  geom_histogram(mapping = aes(x = mu, fill = as.factor(thick))) +
+  scale_fill_brewer(palette="GnBu", name = "Thickness (in)")  +
+  labs(
+    title = "Poisson's Ratio and Thickness",
+    x = "Poisson's Ratio (mu)",
+    y = "Count"
+    )
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness%20and%20mu-1.png)<!-- -->
+
+**Observations**:
+
+  - There is not such a clean relationship here, but Poisson’s Ratio
+    (mu) perhaps bears some relationship to thickness, in that thicker
+    aluminum tended to have a lower value for mu.
+  - The thinnest aluminum has the largest variation in mu.
 
 <!-- end list -->
 

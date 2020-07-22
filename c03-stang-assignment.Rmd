@@ -125,17 +125,14 @@ df_stang_long %>%
     y = "Modulus of Elasticity (E)"
     ) +
   scale_color_brewer(palette = "GnBu", name = "Thickness (in)")
+```
 
+**Observations**:
 
-df_stang_long %>%
-  ggplot() +
-  geom_histogram(mapping = aes(x = mu, fill = as.factor(thick))) +
-  scale_fill_brewer(palette="GnBu", name = "Thickness (in)")  +
-  labs(
-    title = "Poisson's Ratio and Thickness",
-    x = "Poisson's Ratio (mu)",
-    y = "Count"
-    )
+- The thickest aluminum (0.081") has the lowest modulus of elasticity--all 10,100 or less, whereas all other thicknesses were greater than 10,250.
+- The thinnest aluminum (0.022") has the highest modulus of elasticity--all 10,500 or greater.
+
+```{r q3-task, thickness and E}
 
 df_stang_long %>%
   ggplot() +
@@ -150,8 +147,31 @@ df_stang_long %>%
 
 **Observations**:
 
-- The thickest aluminum (0.081") has the lowest modulus of elasticity--all 10,100 or less, whereas all other thicknesses were greater than 10,250.
-- The thinnest aluminum (0.022") has the highest modulus of elasticity--all 10,500 or greater. 
+- The relationship between thickness and the modulus of elasticity is even clearer here. 
+
+
+```{r q3-task, thickness and mu}
+
+df_stang_long %>%
+  ggplot() +
+  geom_histogram(mapping = aes(x = mu, fill = as.factor(thick))) +
+  scale_fill_brewer(palette="GnBu", name = "Thickness (in)")  +
+  labs(
+    title = "Poisson's Ratio and Thickness",
+    x = "Poisson's Ratio (mu)",
+    y = "Count"
+    )
+
+```
+
+**Observations**:
+
+- There is not such a clean relationship here, but Poisson's Ratio (mu) perhaps bears some relationship to thickness, in that thicker aluminum tended to have a lower value for mu.
+- The thinnest aluminum has the largest variation in mu.
+
+
+
+
 
 ```{r q3-task, angle}
 ## TASK: Investigate your question from q1 here
