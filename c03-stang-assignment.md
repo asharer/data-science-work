@@ -307,7 +307,7 @@ df_stang_long %>%
     y = "Modulus of Elasticity (E, ksi)"
     ) +
   geom_hline(yintercept = 10500, linetype = "dashed", color = "blue") +
-  geom_text(x = 0.047, y = 10530, label = "Reported Modulus of Elasticity", color = "blue")
+  annotate("text", label = "Reported Modulus of Elasticity", x = 0.047, y = 10530, color = "blue")
 ```
 
 ![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness%20and%20E,%20boxplot-1.png)<!-- -->

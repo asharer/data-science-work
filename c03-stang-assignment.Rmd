@@ -156,7 +156,7 @@ df_stang_long %>%
     y = "Modulus of Elasticity (E, ksi)"
     ) +
   geom_hline(yintercept = 10500, linetype = "dashed", color = "blue") +
-  geom_text(x = 0.047, y = 10530, label = "Reported Modulus of Elasticity", color = "blue")
+  annotate("text", label = "Reported Modulus of Elasticity", x = 0.047, y = 10530, color = "blue")
 
 ```
 
