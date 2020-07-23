@@ -263,7 +263,7 @@ df_stang_long %>%
   labs(
     title = "Modulus of Elasticity by Poisson's Ratio and Thickness",
     x = "Poisson's Ratio (mu)",
-    y = "Modulus of Elasticity (E)"
+    y = "Modulus of Elasticity (E, ksi)"
     ) +
   scale_color_brewer(palette = "GnBu", name = "Thickness (in)")
 ```
@@ -287,7 +287,7 @@ df_stang_long %>%
   scale_fill_brewer(palette="GnBu", name = "Thickness (in)")  +
   labs(
     title = "Modulus of Elasticity and Thickness",
-    x = "Modulus of Elasticity (E)",
+    x = "Modulus of Elasticity (E, ksi)",
     y = "Count"
     ) 
 ```
@@ -295,6 +295,22 @@ df_stang_long %>%
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness%20and%20E-1.png)<!-- -->
+
+``` r
+df_stang_long %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = thick, y = E, group = thick)) +
+  scale_fill_brewer(palette="GnBu")  +
+  labs(
+    title = "Modulus of Elasticity and Thickness",
+    x = "Thickness",
+    y = "Modulus of Elasticity (E, ksi)"
+    ) +
+  geom_hline(yintercept = 10500, linetype = "dashed", color = "blue") +
+  geom_text(x = 0.047, y = 10530, label = "Reported Modulus of Elasticity", color = "blue")
+```
+
+![](c03-stang-assignment_files/figure-gfm/q3-task,%20thickness%20and%20E,%20boxplot-1.png)<!-- -->
 
 **Observations**:
 
@@ -336,7 +352,7 @@ df_stang_long %>%
   labs(
     title = "Modulus of Elasticity by Poisson's Ratio and Angle",
     x = "Poisson's Ratio (mu)",
-    y = "Modulus of Elasticity (E)"
+    y = "Modulus of Elasticity (E, ksi)"
     ) +
   scale_color_discrete(name = "Angle (degrees)")
 ```
@@ -371,7 +387,8 @@ df_stang_long %>%
 
 **Observations**:
 
-  - Does this graph support or contradict the claim above? Contradict.
+  - Does this graph support or contradict the claim above? Contradict;
+    there is clearly a relationship between E and thickness.
 
 # References
 
