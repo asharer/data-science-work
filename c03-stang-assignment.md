@@ -29,14 +29,14 @@ form, and perform EDA to learn more about the data.
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
     ## ✓ tibble  3.0.1     ✓ dplyr   1.0.0
     ## ✓ tidyr   1.1.0     ✓ stringr 1.4.0
     ## ✓ readr   1.3.1     ✓ forcats 0.5.0
 
-    ## ── Conflicts ────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -389,6 +389,13 @@ df_stang_long %>%
 
   - Does this graph support or contradict the claim above? Contradict;
     there is clearly a relationship between E and thickness.
+  - Is it conclusive? I’m not sure–I wouldn’t consider it conclusive
+    anyway, not without learning more. I assume that in the
+    manufacturing process, there is some amount of variatiability that
+    is expected, and without knowing about that range, I couldn’t say if
+    these values are falling outside of that range, and really making us
+    question everything we know. I would guess these are “close enough,”
+    but haven’t had time to do any research on this.
 
 # References
 

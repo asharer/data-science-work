@@ -224,6 +224,7 @@ df_stang_long %>%
 **Observations**:
 
 - Does this graph support or contradict the claim above? Contradict; there is clearly a relationship between E and thickness.
+- Is it conclusive? I'm not sure--I wouldn't consider it conclusive anyway, not without learning more. I assume that in the manufacturing process, there is some amount of variatiability that is expected, and without knowing about that range, I couldn't say if these values are falling outside of that range, and really making us question everything we know. I would guess these are "close enough," but haven't had time to do any research on this.
 
 # References
 <!-- -------------------------------------------------- -->
