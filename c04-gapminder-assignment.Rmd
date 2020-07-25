@@ -44,13 +44,10 @@ __q1__ Determine the most and least recent years in the `gapminder` dataset.
 
 ```{r q1-task}
 ## TASK: Find the largest and smallest values of `year` in `gapminder`
-year_max <- gapminder %>%
-  summarize(max(year))
-year_max
 
-year_min <- gapminder %>%
-  summarize(min(year))
-year_min
+year_max <- max(select(gapminder, year))
+year_min <- min(select(gapminder, year))
+
 ```
 
 Use the following test to check your work.
@@ -70,41 +67,46 @@ You may encounter difficulties in visualizing these data; if so document your ch
 
 ```{r q2-task}
 ## TASK: Create a visual of gdpPercap vs continent
-year_min
-min_gapminder <- gapminder %>%
-  filter(year == year_min) #This is broken and I don't know why
-min_gapminder 
-
 gapminder %>%
   filter(year == year_min) %>%
-  ggplot(aes(continent, gdpPercap)) +
+  ggplot(aes(gdpPercap, continent)) +
     geom_boxplot() +
-    coord_flip() +
-    labs(title = "GDP per capita by continent", y = "GDP per capita", x = "Continent")
+    coord_trans(x = "log") +
+    labs(title = "GDP per capita by continent", x = "GDP per capita", y = "Continent")
 
 ```
 
 **Observations**:
 
-- Oceania has the highest mean GPD per capita, followed by Europe, the Americas, Asia, and lastly Africa.
-- Asia has the greatest spread of GDP per capita of any continent, and includes multiple countries with the highest GPD per capita in the first year in the dataset (represented as outliers in the chart).
+- In 1952, Oceania had the highest mean GPD per capita, followed by Europe, the Americas, Asia, and lastly Africa.
+- Asia has the greatest spread of GDP per capita of any continent, having one country with a GDP that is much higher than any other country this year.
 
 **Difficulties & Approaches**:
 
 - Difficult to differentiate between GDP values near zero, where many are clustered. Used a boxplot for a high-level summary and flipped the axes to get greater resolution in GDP.  
+- This still wasn't enough. Scaled the x-axis to be logarithmic.
 
 __q3__ You should have found at least three outliers in q2. Identify those outliers (figure out which countries they are).
 
-*Note*: I realize the reasons for
-
 ```{r q3-task}
 ## TASK: Identify the outliers from q2
+outliers_1952 <-
+  gapminder %>%
+  filter(year == year_min) %>%
+  group_by(continent) %>%
+  mutate(
+    "lowerbound" = quantile(gdpPercap, 0.25) - IQR(gdpPercap)*1.5, 
+    "upperbound" = quantile(gdpPercap, 0.75) + IQR(gdpPercap)*1.5
+  ) %>%
+  filter(gdpPercap < lowerbound | gdpPercap > upperbound)
+
+outliers_1952
 
 ```
 
 **Observations**:
 
-- Identify the outlier countries from q2
+- Identify the outlier countries from q2: Angola, Bahrain, Canada, Gabon, Kuwait, South Africa, Switzerland, United States, and Venezuela
 
 __q4__ Create a plot similar to yours from q2 studying both `year_min` and `year_max`. Find a way to highlight the outliers from q3 on your plot. Compare the patterns between `year_min` and `year_max`.
 
@@ -112,19 +114,26 @@ __q4__ Create a plot similar to yours from q2 studying both `year_min` and `year
 
 ```{r q4-task}
 ## TASK: Create a visual of gdpPercap vs continent
+
 gapminder %>%
   filter(year == year_min | year == year_max) %>%
-  ggplot(aes(continent, gdpPercap)) +
+  ggplot(aes(gdpPercap, as.factor(year), fill = as.factor(year))) +
     geom_boxplot() +
-    coord_flip() +
-    facet_grid(year ~ .) +
-    labs(title = "GDP per capita by continent", y = "GDP per capita", x = "Continent") 
+    geom_point(data = outliers_1952, color = "orange") +
+    coord_trans(x = "log") +    
+    facet_grid(continent ~ .) +
+    labs(
+      title = "GDP per capita by continent and year", 
+      x = "GDP per capita", 
+      y = "Year")
+
 
 ```
 
 **Observations**:
 
-- Write your observations here
+- Mean GDP per capita increased for all continents from 1952 to 2007.
+- In all cases except Asia, the boxplot's whiskers in 2007 extend higher than the GDP for the highest outlier in that continent in 1952.
 
 # Your Own EDA
 <!-- -------------------------------------------------- -->
@@ -133,22 +142,82 @@ Now it's your turn! We just went through guided EDA considering the GDP per capi
 
 __q5__ Create *at least* three new figures below. With each figure, try to pose new questions about the data.
 
+How do GDP and life expectancy compare?
+
 ```{r q5-task1}
 ## TASK: Your first graph
+ggplot(gapminder, aes(gdpPercap, lifeExp)) +
+  geom_point(aes(color = year)) +
+  coord_trans(x = "log") +
+  geom_smooth(color = "orange") +
+  labs(
+    title = "GDP per capita and life expectancy",
+    x = "GDP per capita",
+    y = "Life expectancy"
+  )
 ```
 
+**Observations**
 
+- As we might expect, increasing GDP per capita tends to mean an increased life expectancy, 
+except at the very top values of GDP per capita.
+- I would hypothesize that these countries were likely oil-rich authoritarian states, with a high GDP benefiting only the wealthiest in the country, leaving a large portion of the population poor, and in correspondingly poor health. Or it's the US; this could really go either way.
+
+```{r q5-task1 additional looking}
+topGDP <-
+  gapminder %>%
+  filter(gdpPercap > 50000) %>%
+  arrange(desc(gdpPercap))
+
+topGDP
+```
+
+**Observations**
+- All the GDP per capita values greater than $50,000 are Kuwait. (I'm feeling smug. All those political science classes are paying off right now.)
+- At least the US didn't turn out to be in this set, I guess.
+
+
+So... What's the trend in the US over time with respect to GDP and life expectancy?
 ```{r q5-task2}
 ## TASK: Your second graph
+gapminder %>%
+  filter(country == "United States") %>%
+  ggplot(aes(year, gdpPercap)) +
+    geom_point(aes(color = lifeExp)) +
+    scale_color_continuous(name = "Life expectancy") +
+    labs(
+      title = "GDP per capita and life expectancy in the United States, 1952-2007",
+      x = "Year",
+      y = "GDP per capita"
+    )
 ```
+
+**Observations**
+
+- Boring but good. 
+- Now I'm curious about Kuwait though.
 
 
 ```{r q5-task3}
 ## TASK: Your third graph
+
+gapminder %>%
+  filter(country == "Kuwait") %>%
+  ggplot(aes(year, gdpPercap)) +
+    geom_point(aes(color = lifeExp)) +
+    scale_color_continuous(name = "Life expectancy") +
+    labs(
+      title = "GDP per capita and life expectancy in Kuwait, 1952-2007",
+      x = "Year",
+      y = "GDP per capita"
+    )
 ```
 
 
+**Observations**
 
+- Fascinating. Life expectancy increases pretty steadily over the time period, but meanwhile GDP falls dramatically from the early 1970s to the mid 1980s, then starts climbing again.
+- I wonder what political changes were wrought in this time period to bring about this effect?
 
 
 
