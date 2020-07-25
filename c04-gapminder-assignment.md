@@ -339,7 +339,7 @@ gapminder %>%
   #coord_trans(x = "log") +
   geom_smooth(color = "orange") +
   labs(
-    title = "GDP per capita and life expectancy",
+    title = "GDP per capita and life expectancy (excluding Kuwait)",
     x = "GDP per capita",
     y = "Life expectancy"
   )
@@ -362,36 +362,41 @@ gapminder %>%
 ``` r
 rich_but_unhealthy <-
   gapminder %>%
-  filter(country != "Kuwait" & gdpPercap > 15000 & lifeExp < 65) %>%
+  filter(gdpPercap > 15000 & lifeExp < 70) %>%
   arrange(country)
 
 rich_but_unhealthy
 ```
 
-    ## # A tibble: 11 x 6
-    ##    country      continent  year lifeExp      pop gdpPercap
-    ##    <fct>        <fct>     <int>   <dbl>    <int>     <dbl>
-    ##  1 Bahrain      Asia       1972    63.3   230800    18269.
-    ##  2 Gabon        Africa     1977    52.8   706367    21746.
-    ##  3 Gabon        Africa     1982    56.6   753874    15113.
-    ##  4 Libya        Africa     1967    50.2  1759224    18773.
-    ##  5 Libya        Africa     1972    52.8  2183877    21011.
-    ##  6 Libya        Africa     1977    57.4  2721783    21951.
-    ##  7 Libya        Africa     1982    62.2  3344074    17364.
-    ##  8 Saudi Arabia Asia       1967    49.9  5618198    16903.
-    ##  9 Saudi Arabia Asia       1972    53.9  6472756    24837.
-    ## 10 Saudi Arabia Asia       1977    58.7  8128505    34168.
-    ## 11 Saudi Arabia Asia       1982    63.0 11254672    33693.
+    ## # A tibble: 23 x 6
+    ##    country continent  year lifeExp    pop gdpPercap
+    ##    <fct>   <fct>     <int>   <dbl>  <int>     <dbl>
+    ##  1 Bahrain Asia       1972    63.3 230800    18269.
+    ##  2 Bahrain Asia       1977    65.6 297410    19340.
+    ##  3 Bahrain Asia       1982    69.1 377967    19211.
+    ##  4 Gabon   Africa     1977    52.8 706367    21746.
+    ##  5 Gabon   Africa     1982    56.6 753874    15113.
+    ##  6 Kuwait  Asia       1952    55.6 160000   108382.
+    ##  7 Kuwait  Asia       1957    58.0 212846   113523.
+    ##  8 Kuwait  Asia       1962    60.5 358266    95458.
+    ##  9 Kuwait  Asia       1967    64.6 575003    80895.
+    ## 10 Kuwait  Asia       1972    67.7 841934   109348.
+    ## # … with 13 more rows
 
 **Observations**:
 
   - These “rich but unhealthy” countries (per capita GDP greater than
-    15,000, but life expectancy less than 65) are (excluding Kuwait,
-    which would fall in this set but has already been covered): Bahrain;
-    Gabon; Libya; and Saudi Arabia.
-  - I am familiar with Saudi Arabia, Libya, and Bahrain as oil-rich
-    authoritarian nations with a wealthy elite and the bulk of the
-    population being much less wealthy, but I knew little about Gabon.
+    15,000, but life expectancy less than 70) are: Bahrain; Gabon;
+    Kuwait (as covered previously); Libya; Oman; Saudi Arabia; and
+    Trinidad and Tobago (only in 2007).
+  - I am familiar with most of these nations as oil-rich authoritarian
+    nations with a wealthy elite and the bulk of the population being
+    much less wealthy, but I am not as familiar with the governmental
+    structure of Trinidad and Tobago, and I know little about Gabon.
+    (Some racism inherent in my education, I suspect. Gabon is the only
+    nation in this list located in sub-Saharan Africa, and my education
+    on this region tends to be limited to the worst of ethno-political
+    conflicts–e.g. Congo, Rwanda–and the native megafauna.)
   - Gabon (during the time period it fit these criteria, 1977-1982) was
     a one-party state with an “elected” president who had initially been
     elected in 1961 (following Gabon’s liberation from French colonial
@@ -405,13 +410,15 @@ rich_but_unhealthy
     throughout this time period.) Bongo eventually died in 2009, and was
     succeeded by his son, Ali Bongo Ondimba (also now referred to as
     Bongo). Gabon’s economy is dominated by oil.
+  - Trinidad and Tobago has been experiencing an oil boom since 2003,
+    and it seems that although it is ostensibly a democracy, it is rife
+    with corruption.
 
 <!-- end list -->
 
 ``` r
 ## TASK: Your third graph
 gapminder %>%
-  filter(country != "Kuwait") %>%
   ggplot(aes(gdpPercap, lifeExp)) +
   geom_point(aes(color = year)) +
   scale_color_continuous(name = "Year") +
@@ -430,7 +437,7 @@ gapminder %>%
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task3,%20revisited-1.png)<!-- -->
 
 The red points on the chart above are these “rich but unhealthy” nations
-that I filtered somewhat arbitrarily out of the dataset.
+that I filtered out of the dataset previously.
 
 <!-- include-rubric -->
 

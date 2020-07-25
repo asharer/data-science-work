@@ -213,7 +213,7 @@ gapminder %>%
   #coord_trans(x = "log") +
   geom_smooth(color = "orange") +
   labs(
-    title = "GDP per capita and life expectancy",
+    title = "GDP per capita and life expectancy (excluding Kuwait)",
     x = "GDP per capita",
     y = "Life expectancy"
   )
@@ -229,7 +229,7 @@ gapminder %>%
 ```{r q5-task3 additional investigation}
 rich_but_unhealthy <-
   gapminder %>%
-  filter(country != "Kuwait" & gdpPercap > 15000 & lifeExp < 65) %>%
+  filter(gdpPercap > 15000 & lifeExp < 70) %>%
   arrange(country)
 
 rich_but_unhealthy
@@ -237,14 +237,14 @@ rich_but_unhealthy
 
 **Observations**:
 
-- These "rich but unhealthy" countries (per capita GDP greater than 15,000, but life expectancy less than 65) are (excluding Kuwait, which would fall in this set but has already been covered): Bahrain; Gabon; Libya; and Saudi Arabia.
-- I am familiar with Saudi Arabia, Libya, and Bahrain as oil-rich authoritarian nations with a wealthy elite and the bulk of the population being much less wealthy, but I knew little about Gabon. 
+- These "rich but unhealthy" countries (per capita GDP greater than 15,000, but life expectancy less than 70) are: Bahrain; Gabon; Kuwait (as covered previously); Libya; Oman; Saudi Arabia; and Trinidad and Tobago (only in 2007).
+- I am familiar with most of these nations as oil-rich authoritarian nations with a wealthy elite and the bulk of the population being much less wealthy, but I am not as familiar with the governmental structure of Trinidad and Tobago, and I know little about Gabon. (Some racism inherent in my education, I suspect. Gabon is the only nation in this list located in sub-Saharan Africa, and my education on this region tends to be limited to the worst of ethno-political conflicts--e.g. Congo, Rwanda--and the native megafauna.)
 - Gabon (during the time period it fit these criteria, 1977-1982) was a one-party state with an "elected" president who had initially been elected in 1961 (following Gabon's liberation from French colonial rule in 1960). This president, President M'ba, subsequently suppressed the press, curtailed freedoms, and pushed out all other political parties, eventually dissolving the national assembly. With the help of the French, he survived an army coup in 1964. After his death in 1967, he was succeeded by his vice president, a fellow referred to as "Bongo" (Omar Bongo Ondimba), who officially declared Gabon a one-party state in 1968. (This situation seems unchanged throughout this time period.) Bongo eventually died in 2009, and was succeeded by his son, Ali Bongo Ondimba (also now referred to as Bongo). Gabon's economy is dominated by oil. 
+- Trinidad and Tobago has been experiencing an oil boom since 2003, and it seems that although it is ostensibly a democracy, it is rife with corruption.
 
 ```{r q5-task3, revisited}
 ## TASK: Your third graph
 gapminder %>%
-  filter(country != "Kuwait") %>%
   ggplot(aes(gdpPercap, lifeExp)) +
   geom_point(aes(color = year)) +
   scale_color_continuous(name = "Year") +
@@ -259,7 +259,7 @@ gapminder %>%
 
 ```
 
-The red points on the chart above are these "rich but unhealthy" nations that I filtered somewhat arbitrarily out of the dataset.
+The red points on the chart above are these "rich but unhealthy" nations that I filtered out of the dataset previously.
 
 <!-- include-rubric -->
 # Grading Rubric
