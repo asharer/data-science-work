@@ -1,7 +1,7 @@
 Gapminder
 ================
 Angela Sharer
-2020-07-24
+2020-07-25
 
   - [Guided EDA](#guided-eda)
   - [Your Own EDA](#your-own-eda)
@@ -414,6 +414,39 @@ rich_but_unhealthy
     and it seems that although it is ostensibly a democracy, it is rife
     with corruption.
 
+I’d like to take a quick look at GDP per capita and life expectancy for
+the nations I haven’t already examined closely (that is, all except
+Kuwait).
+
+``` r
+gapminder %>%
+  filter(
+    country == "Trinidad and Tobago" | 
+      country == "Oman" | 
+      country == "Gabon" | 
+      country == "Saudi Arabia" |
+      country == "Libya" |
+      country == "Bahrain" 
+    ) %>%
+  ggplot(aes(year, gdpPercap)) +
+    geom_point(aes(color = lifeExp)) +
+    scale_color_continuous(name = "Life expectancy") +
+    labs(
+      title = "GDP per capita and life expectancy, select nations, 1952-2007",
+      x = "Year",
+      y = "GDP per capita"
+    ) +
+  facet_wrap( ~ country)
+```
+
+![](c04-gapminder-assignment_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+**Observations**:
+
+  - Trinidad and Tobago only makes it into my “rich but unhealthy” set
+    because of GDP growth (due likely to the oil boom); their life
+    expectancy is increasing steadily, but as of 2007 remained below 70.
+
 <!-- end list -->
 
 ``` r
@@ -437,7 +470,7 @@ gapminder %>%
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task3,%20revisited-1.png)<!-- -->
 
 The red points on the chart above are these “rich but unhealthy” nations
-that I filtered out of the dataset previously.
+that I previously examined.
 
 After I saw a cool plot that Jen did, I got curious about some things…
 

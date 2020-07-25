@@ -1,7 +1,7 @@
 ---
 title: "Gapminder"
 author: "Angela Sharer"
-date: 2020-07-24
+date: 2020-07-25
 output:
   github_document:
     toc: true
@@ -242,6 +242,34 @@ rich_but_unhealthy
 - Gabon (during the time period it fit these criteria, 1977-1982) was a one-party state with an "elected" president who had initially been elected in 1961 (following Gabon's liberation from French colonial rule in 1960). This president, President M'ba, subsequently suppressed the press, curtailed freedoms, and pushed out all other political parties, eventually dissolving the national assembly. With the help of the French, he survived an army coup in 1964. After his death in 1967, he was succeeded by his vice president, a fellow referred to as "Bongo" (Omar Bongo Ondimba), who officially declared Gabon a one-party state in 1968. (This situation seems unchanged throughout this time period.) Bongo eventually died in 2009, and was succeeded by his son, Ali Bongo Ondimba (also now referred to as Bongo). Gabon's economy is dominated by oil. 
 - Trinidad and Tobago has been experiencing an oil boom since 2003, and it seems that although it is ostensibly a democracy, it is rife with corruption.
 
+I'd like to take a quick look at GDP per capita and life expectancy for the nations I haven't already examined closely (that is, all except Kuwait).
+
+```{r}
+gapminder %>%
+  filter(
+    country == "Trinidad and Tobago" | 
+      country == "Oman" | 
+      country == "Gabon" | 
+      country == "Saudi Arabia" |
+      country == "Libya" |
+      country == "Bahrain" 
+    ) %>%
+  ggplot(aes(year, gdpPercap)) +
+    geom_point(aes(color = lifeExp)) +
+    scale_color_continuous(name = "Life expectancy") +
+    labs(
+      title = "GDP per capita and life expectancy, select nations, 1952-2007",
+      x = "Year",
+      y = "GDP per capita"
+    ) +
+  facet_wrap( ~ country)
+```
+
+**Observations**:
+
+- Trinidad and Tobago only makes it into my "rich but unhealthy" set because of GDP growth (due likely to the oil boom); their life expectancy is increasing steadily, but as of 2007 remained below 70.
+
+
 ```{r q5-task3, revisited}
 ## TASK: Your third graph
 gapminder %>%
@@ -259,7 +287,7 @@ gapminder %>%
 
 ```
 
-The red points on the chart above are these "rich but unhealthy" nations that I filtered out of the dataset previously.
+The red points on the chart above are these "rich but unhealthy" nations that I previously examined.
 
 
 After I saw a cool plot that Jen did, I got curious about some things...
