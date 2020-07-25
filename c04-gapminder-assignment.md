@@ -132,7 +132,7 @@ gapminder %>%
   ggplot(aes(gdpPercap, continent)) +
     geom_boxplot() +
     coord_trans(x = "log") +
-    labs(title = "GDP per capita by continent", x = "GDP per capita", y = "Continent")
+    labs(title = "GDP per capita by continent, 1952", x = "GDP per capita", y = "Continent")
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
@@ -204,6 +204,7 @@ gapminder %>%
   filter(year == year_min | year == year_max) %>%
   ggplot(aes(gdpPercap, as.factor(year), fill = as.factor(year))) +
     geom_boxplot() +
+    scale_fill_discrete(name = "Year") +
     geom_point(data = outliers_1952, color = "orange") +
     coord_trans(x = "log") +    
     facet_grid(continent ~ .) +
@@ -240,6 +241,7 @@ How do GDP and life expectancy compare?
 ## TASK: Your first graph
 ggplot(gapminder, aes(gdpPercap, lifeExp)) +
   geom_point(aes(color = year)) +
+  scale_color_continuous(name = "Year") +
   coord_trans(x = "log") +
   geom_smooth(color = "orange") +
   labs(
@@ -253,7 +255,7 @@ ggplot(gapminder, aes(gdpPercap, lifeExp)) +
 
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task1-1.png)<!-- -->
 
-**Observations**
+**Observations**:
 
   - As we might expect, increasing GDP per capita tends to mean an
     increased life expectancy, except at the very top values of GDP per
@@ -285,61 +287,150 @@ topGDP
     ## 5 Kuwait  Asia       1967    64.6  575003    80895.
     ## 6 Kuwait  Asia       1977    69.3 1140357    59265.
 
-**Observations** - All the GDP per capita values greater than $50,000
-are Kuwait. (I’m feeling smug. All those political science classes are
-paying off right now.) - At least the US didn’t turn out to be in this
-set, I guess.
+**Observations**:
+
+  - All the GDP per capita values greater than $50,000 are Kuwait. (I’m
+    feeling smug. All those political science classes are paying off
+    right now.)
+  - At least the US didn’t turn out to be in this set, I guess.
 
 So… What’s the trend in the US over time with respect to GDP and life
-expectancy?
+expectancy? And what about Kuwait?
 
 ``` r
 ## TASK: Your second graph
 gapminder %>%
-  filter(country == "United States") %>%
+  filter(country == "United States" | country == "Kuwait") %>%
   ggplot(aes(year, gdpPercap)) +
     geom_point(aes(color = lifeExp)) +
     scale_color_continuous(name = "Life expectancy") +
     labs(
-      title = "GDP per capita and life expectancy in the United States, 1952-2007",
+      title = "GDP per capita and life expectancy in Kuwait and the US, 1952-2007",
       x = "Year",
       y = "GDP per capita"
-    )
+    ) +
+  facet_grid(. ~ country)
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task2-1.png)<!-- -->
 
-**Observations**
+**Observations**:
 
-  - Boring but good.
-  - Now I’m curious about Kuwait though.
+  - The US: Boring but good. Over time, we are pretty steadily
+    increasing our life expectancy as a country, as well as our GDP per
+    capita.
+  - Kuwait: Fascinating. Life expectancy increases pretty steadily over
+    the time period, but meanwhile GDP falls dramatically from the early
+    1970s to the mid 1980s, then starts climbing again. I wonder what
+    political changes were wrought in this time period to bring about
+    this effect? (I checked Wikipedia; the answer is an economic crisis,
+    first, and then involvement in several wars etc.)
+
+We’ve now investigated Kuwait and it’s an interesting one. It’s screwing
+up our x-axis, though. Let’s remove it from our consideration, for now:
+
+``` r
+## TASK: Your third graph
+gapminder %>%
+  filter(country != "Kuwait") %>%
+  ggplot(aes(gdpPercap, lifeExp)) +
+  geom_point(aes(color = year)) +
+  scale_color_continuous(name = "Year") +
+  #coord_trans(x = "log") +
+  geom_smooth(color = "orange") +
+  labs(
+    title = "GDP per capita and life expectancy",
+    x = "GDP per capita",
+    y = "Life expectancy"
+  )
+```
+
+    ## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+
+![](c04-gapminder-assignment_files/figure-gfm/q5-task3-1.png)<!-- -->
+
+**Observations**:
+
+  - Without Kuwait, I can make my GDP axis linear again. It seems GDP
+    per capita is a story of diminishing returns with respect to life
+    expectancy. We also have some interesting outliers far below the
+    curve; again I’m going to guess they’re oil-rich authoritarian
+    states, and then see if that’s true.
+
+<!-- end list -->
+
+``` r
+rich_but_unhealthy <-
+  gapminder %>%
+  filter(country != "Kuwait" & gdpPercap > 15000 & lifeExp < 65) %>%
+  arrange(country)
+
+rich_but_unhealthy
+```
+
+    ## # A tibble: 11 x 6
+    ##    country      continent  year lifeExp      pop gdpPercap
+    ##    <fct>        <fct>     <int>   <dbl>    <int>     <dbl>
+    ##  1 Bahrain      Asia       1972    63.3   230800    18269.
+    ##  2 Gabon        Africa     1977    52.8   706367    21746.
+    ##  3 Gabon        Africa     1982    56.6   753874    15113.
+    ##  4 Libya        Africa     1967    50.2  1759224    18773.
+    ##  5 Libya        Africa     1972    52.8  2183877    21011.
+    ##  6 Libya        Africa     1977    57.4  2721783    21951.
+    ##  7 Libya        Africa     1982    62.2  3344074    17364.
+    ##  8 Saudi Arabia Asia       1967    49.9  5618198    16903.
+    ##  9 Saudi Arabia Asia       1972    53.9  6472756    24837.
+    ## 10 Saudi Arabia Asia       1977    58.7  8128505    34168.
+    ## 11 Saudi Arabia Asia       1982    63.0 11254672    33693.
+
+**Observations**:
+
+  - These “rich but unhealthy” countries (per capita GDP greater than
+    15,000, but life expectancy less than 65) are (excluding Kuwait,
+    which would fall in this set but has already been covered): Bahrain;
+    Gabon; Libya; and Saudi Arabia.
+  - I am familiar with Saudi Arabia, Libya, and Bahrain as oil-rich
+    authoritarian nations with a wealthy elite and the bulk of the
+    population being much less wealthy, but I knew little about Gabon.
+  - Gabon (during the time period it fit these criteria, 1977-1982) was
+    a one-party state with an “elected” president who had initially been
+    elected in 1961 (following Gabon’s liberation from French colonial
+    rule in 1960). This president, President M’ba, subsequently
+    suppressed the press, curtailed freedoms, and pushed out all other
+    political parties, eventually dissolving the national assembly. With
+    the help of the French, he survived an army coup in 1964. After his
+    death in 1967, he was succeeded by his vice president, a fellow
+    referred to as “Bongo” (Omar Bongo Ondimba), who officially declared
+    Gabon a one-party state in 1968. (This situation seems unchanged
+    throughout this time period.) Bongo eventually died in 2009, and was
+    succeeded by his son, Ali Bongo Ondimba (also now referred to as
+    Bongo). Gabon’s economy is dominated by oil.
 
 <!-- end list -->
 
 ``` r
 ## TASK: Your third graph
-
 gapminder %>%
-  filter(country == "Kuwait") %>%
-  ggplot(aes(year, gdpPercap)) +
-    geom_point(aes(color = lifeExp)) +
-    scale_color_continuous(name = "Life expectancy") +
-    labs(
-      title = "GDP per capita and life expectancy in Kuwait, 1952-2007",
-      x = "Year",
-      y = "GDP per capita"
-    )
+  filter(country != "Kuwait") %>%
+  ggplot(aes(gdpPercap, lifeExp)) +
+  geom_point(aes(color = year)) +
+  scale_color_continuous(name = "Year") +
+  #coord_trans(x = "log") +
+  geom_smooth(color = "orange") +
+  geom_point(data = rich_but_unhealthy, color = "red") +
+  labs(
+    title = "GDP per capita and life expectancy",
+    x = "GDP per capita",
+    y = "Life expectancy"
+  )
 ```
 
-![](c04-gapminder-assignment_files/figure-gfm/q5-task3-1.png)<!-- -->
+    ## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
 
-**Observations**
+![](c04-gapminder-assignment_files/figure-gfm/q5-task3,%20revisited-1.png)<!-- -->
 
-  - Fascinating. Life expectancy increases pretty steadily over the time
-    period, but meanwhile GDP falls dramatically from the early 1970s to
-    the mid 1980s, then starts climbing again.
-  - I wonder what political changes were wrought in this time period to
-    bring about this effect?
+The red points on the chart above are these “rich but unhealthy” nations
+that I filtered somewhat arbitrarily out of the dataset.
 
 <!-- include-rubric -->
 
