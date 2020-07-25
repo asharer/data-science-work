@@ -261,6 +261,37 @@ gapminder %>%
 
 The red points on the chart above are these "rich but unhealthy" nations that I filtered out of the dataset previously.
 
+
+After I saw a cool plot that Jen did, I got curious about some things...
+
+```{r continental trends over time}
+df_continentaltrends <-
+  gapminder %>%
+  group_by(continent, year) %>%
+  summarize(mean_gdpPercap = mean(gdpPercap), mean_population = mean(pop), mean_lifeExp = mean(lifeExp))
+
+df_continentaltrends
+
+df_continentaltrends %>%
+  ggplot(aes(mean_population, mean_gdpPercap, color = year)) +
+  scale_color_continuous(name = "Year") +
+  geom_point() +
+  coord_trans(x = "log") +
+  facet_grid(continent ~ .) +
+  labs(
+    title = "GDP per capita and population by continent over time",
+    x = "Mean population",
+    y = "Mean GDP per capita"
+  )
+```
+
+
+**Observations**:
+
+- This plot is an interesting way to look at global trends over time: We can see the large GDP growth over this time period in Oceania and Europe; the huge population growth in Africa without apparent growth in GDP per capita (at least on this scale); and Asia's high population in comparison to all other continents.
+
+
+
 <!-- include-rubric -->
 # Grading Rubric
 <!-- -------------------------------------------------- -->

@@ -20,14 +20,14 @@ learning.
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ──────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
     ## ✓ tibble  3.0.1     ✓ dplyr   1.0.0
     ## ✓ tidyr   1.1.0     ✓ stringr 1.4.0
     ## ✓ readr   1.3.1     ✓ forcats 0.5.0
 
-    ## ── Conflicts ─────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -438,6 +438,61 @@ gapminder %>%
 
 The red points on the chart above are these “rich but unhealthy” nations
 that I filtered out of the dataset previously.
+
+After I saw a cool plot that Jen did, I got curious about some things…
+
+``` r
+df_continentaltrends <-
+  gapminder %>%
+  group_by(continent, year) %>%
+  summarize(mean_gdpPercap = mean(gdpPercap), mean_population = mean(pop), mean_lifeExp = mean(lifeExp))
+```
+
+    ## `summarise()` regrouping output by 'continent' (override with `.groups` argument)
+
+``` r
+df_continentaltrends
+```
+
+    ## # A tibble: 60 x 5
+    ## # Groups:   continent [5]
+    ##    continent  year mean_gdpPercap mean_population mean_lifeExp
+    ##    <fct>     <int>          <dbl>           <dbl>        <dbl>
+    ##  1 Africa     1952          1253.        4570010.         39.1
+    ##  2 Africa     1957          1385.        5093033.         41.3
+    ##  3 Africa     1962          1598.        5702247.         43.3
+    ##  4 Africa     1967          2050.        6447875.         45.3
+    ##  5 Africa     1972          2340.        7305376.         47.5
+    ##  6 Africa     1977          2586.        8328097.         49.6
+    ##  7 Africa     1982          2482.        9602857.         51.6
+    ##  8 Africa     1987          2283.       11054502.         53.3
+    ##  9 Africa     1992          2282.       12674645.         53.6
+    ## 10 Africa     1997          2379.       14304480.         53.6
+    ## # … with 50 more rows
+
+``` r
+df_continentaltrends %>%
+  ggplot(aes(mean_population, mean_gdpPercap, color = year)) +
+  scale_color_continuous(name = "Year") +
+  geom_point() +
+  coord_trans(x = "log") +
+  facet_grid(continent ~ .) +
+  labs(
+    title = "GDP per capita and population by continent over time",
+    x = "Mean population",
+    y = "Mean GDP per capita"
+  )
+```
+
+![](c04-gapminder-assignment_files/figure-gfm/continental%20trends%20over%20time-1.png)<!-- -->
+
+**Observations**:
+
+  - This plot is an interesting way to look at global trends over time:
+    We can see the large GDP growth over this time period in Oceania and
+    Europe; the huge population growth in Africa without apparent growth
+    in GDP per capita (at least on this scale); and Asia’s high
+    population in comparison to all other continents.
 
 <!-- include-rubric -->
 
