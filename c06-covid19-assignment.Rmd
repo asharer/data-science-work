@@ -1,7 +1,7 @@
 ---
 title: "COVID-19"
 author: "Angela Sharer"
-date: 2020-07-25
+date: 2020-07-28
 output:
   github_document:
     toc: true
@@ -11,35 +11,6 @@ output:
 
 In this challenge, you'll learn how to navigate the U.S. Census Bureau website, programmatically download data from the internet, and perform a county-level population-weighted analysis of current covid-19 trends. Get excited!
 
-<!-- include-rubric -->
-# Grading Rubric
-<!-- -------------------------------------------------- -->
-
-Unlike exercises, **challenges will be graded**. The following rubrics define how you will be graded, both on an individual and team basis.
-
-## Individual
-<!-- ------------------------- -->
-
-| Category | Unsatisfactory | Satisfactory |
-|----------|----------------|--------------|
-| Effort | Some task __q__'s left unattempted | All task __q__'s attempted |
-| Observed | Did not document observations | Documented observations based on analysis |
-| Supported | Some observations not supported by analysis | All observations supported by analysis (table, graph, etc.) |
-| Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
-
-## Team
-<!-- ------------------------- -->
-
-| Category | Unsatisfactory | Satisfactory |
-|----------|----------------|--------------|
-| Documented | No team contributions to Wiki | Team contributed to Wiki |
-| Referenced | No team references in Wiki | At least one reference in Wiki to member report(s) |
-| Relevant | References unrelated to assertion, or difficult to find related analysis based on reference text | Reference text clearly points to relevant analysis |
-
-## Due Date
-<!-- ------------------------- -->
-
-All the deliverables stated in the rubrics above are due on the day of the class discussion of that exercise. See the [Syllabus](https://docs.google.com/document/d/1jJTh2DH8nVJd2eyMMoyNGroReo0BKcJrz1eONi3rPSc/edit?usp=sharing) for more information.
 
 ```{r setup}
 library(tidyverse)
@@ -73,7 +44,7 @@ That's the high-level view; now let's dig into the details.
 3. Apply filters to find the ACS Total Population estimates, disaggregated by counties. I used the filters:
   - `Topics > Populations and People > Counts, Estimates, and Projections > Population Total`
   - `Geography > County > All counties in United States`
-5. Click the `Download` button to download the data; make sure to select the 2018 y-year estimates.
+5. Click the `Download` button to download the data; make sure to select the 2018 5-year estimates.
 6. Unzip and move the data to your `challenges/data` folder.
   - Note that the data will have the crazy-long filename `ACSDT5Y2018.B01003_data_with_overlays_2020-06-30T102151.csv`. That's because metadata is stored in the filename, such as the year of the estimate (`Y2018`) and my access date (`2020-06-30`).
 
@@ -83,7 +54,8 @@ __q1__ Load Table `B01003` into the following tibble. Make sure the column names
 
 ```{r q1-task}
 ## TASK: Load the census bureau data with the following tibble name.
-df_pop <- NA
+df_pop <- read_csv("./data/ACSDT5Y2018.B01003_data_with_overlays_2020-07-28T114213.csv", skip = 1)
+
 ```
 
 *Note*: You can find information on 1-year, 3-year, and 5-year estimates [here](https://www.census.gov/programs-surveys/acs/guidance/estimates.html). The punchline is that 5-year estimates are more reliable but less current.
@@ -99,7 +71,7 @@ __q2__ Visit the NYT [GitHub](https://github.com/nytimes/covid-19-data) repo and
 
 ```{r q2-task}
 ## TASK: Find the URL for the NYT covid-19 county-level data
-url_counties <- "https://github.com/nytimes/covid-19-data/blob/master/us-counties.csv?raw=true"
+url_counties <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 ```
 
 Once you have the url, the following code will download a local copy of the data, then load the data into R.
@@ -142,7 +114,10 @@ __q3__ Process the `id` column of `df_pop` to create a `fips` column.
 
 ```{r q3-task}
 ## TASK: Create a `fips` column by extracting the county code
-df_q3 <- NA
+df_q3 <- 
+  df_pop %>%
+  separate(col = id, into = c("id_short", "fips"), sep = -5)
+#df_q3
 ```
 
 Use the following test to check your answer.
@@ -150,21 +125,24 @@ Use the following test to check your answer.
 ```{r q3-tests}
 ## NOTE: No need to change this
 ## Check known county
-#assertthat::assert_that(
-#              (df_q3 %>%
-#              filter(str_detect(`Geographic Area Name`, "Autauga County")) %>%
-#              pull(fips)) == "01001"
-#            )
-#print("Very good!")
+assertthat::assert_that(
+              (df_q3 %>%
+              filter(str_detect(`Geographic Area Name`, "Autauga County")) %>%
+              pull(fips)) == "01001"
+            )
+print("Very good!")
 ```
 
-Once
+
 
 __q4__ Join `df_covid` with `df_q3` by the `fips` column. Use the proper type of join to preserve all rows in `df_covid`.
 
 ```{r q4-task}
 ## TASK: Join df_covid and df_q3 by fips.
-df_q4 <- NA
+df_q4 <- 
+  df_covid %>%
+  left_join(df_q3, by = "fips")
+#df_q4
 ```
 
 For convenience, I down-select some columns and produce more convenient column
@@ -172,17 +150,17 @@ names.
 
 ```{r rename}
 ## NOTE: No need to change; run this to produce a more convenient tibble
-#df_data <-
-#  df_q4 %>%
-#  select(
-#    date,
-#    county,
-#    state,
-#    fips,
-#    cases,
-#    deaths,
-#    population = `Estimate!!Total`
-#  )
+df_data <-
+  df_q4 %>%
+  select(
+    date,
+    county,
+    state,
+    fips,
+    cases,
+    deaths,
+    population = `Estimate!!Total`
+  )
 ```
 
 # Analyze
@@ -197,8 +175,12 @@ __q5__ Use the `population` estimates in `df_data` to normalize `cases` and `dea
 
 ```{r q5-task}
 ## TASK: Normalize cases and deaths
-#df_normalized <-
-#  df_data
+df_normalized <-
+  df_data %>%
+  mutate(
+    cases_perk = 100000 * cases / population,
+    deaths_perk = 100000 * deaths / population
+    )
 ```
 
 You may use the following test to check your work.
@@ -206,24 +188,24 @@ You may use the following test to check your work.
 ```{r q5-tests}
 ## NOTE: No need to change this
 ## Check known county data
-#assertthat::assert_that(
-#              abs(df_normalized %>%
-#               filter(
-#                 str_detect(county, "Snohomish"),
-#                 date == "2020-01-21"
-#               ) %>%
-#              pull(cases_perk) - 0.127) < 1e-3
-#            )
-#assertthat::assert_that(
-#              abs(df_normalized %>%
-#               filter(
-#                 str_detect(county, "Snohomish"),
-#                 date == "2020-01-21"
-#               ) %>%
-#              pull(deaths_perk) - 0) < 1e-3
-#            )
+assertthat::assert_that(
+              abs(df_normalized %>%
+               filter(
+                 str_detect(county, "Snohomish"),
+                 date == "2020-01-21"
+               ) %>%
+              pull(cases_perk) - 0.127) < 1e-3
+            )
+assertthat::assert_that(
+              abs(df_normalized %>%
+               filter(
+                 str_detect(county, "Snohomish"),
+                 date == "2020-01-21"
+               ) %>%
+              pull(deaths_perk) - 0) < 1e-3
+            )
 
-#print("Excellent!")
+print("Excellent!")
 ```
 
 ## Guided EDA
@@ -235,19 +217,51 @@ __q6__ Compute the mean and standard deviation for `cases_perk` and `deaths_perk
 
 ```{r q6-task}
 ## TASK: Compute mean and sd for cases_perk and deaths_perk
+df_normalized %>%
+  summarize(
+    mean_cases_per100k = mean(cases_perk, na.rm=TRUE),
+    sd_cases_per100k = sd(cases_perk, na.rm=TRUE),
+    mean_deaths_per100k = mean(deaths_perk, na.rm=TRUE),
+    sd_deaths_per100k = sd(deaths_perk, na.rm=TRUE)
+    )
 ```
 
 __q7__ Find the top 10 counties in terms of `cases_perk`, and the top 10 in terms of `deaths_perk`. Report the population of each county along with the per-100,000 counts. Compare the counts against the mean values you found in q6. Note any observations. Does New York City show up in the top? Why or why not?
 
 ```{r q7-task}
 ## TASK: Find the top 10 max cases_perk counties; report populations as well
+top10_cases_perk_counties <-
+  df_normalized %>%
+  arrange(desc(cases_perk)) %>%
+  head(10)
+top10_cases_perk_counties
 
 ## TASK: Find the top 10 deaths_perk counties; report populations as well
+top10_deaths_perk_counties <-
+  df_normalized %>%
+  arrange(desc(deaths_perk)) %>%
+  head(10)
+top10_deaths_perk_counties
+
+df_newyork <-
+  df_normalized %>%
+  filter(state == "New York") %>%
+  group_by(county) %>%
+  summarize(
+    max_cases = max(cases), 
+    max_deaths = max(deaths), 
+    max_pop = max(population)
+    ) %>%
+  arrange(desc(max_deaths))
+df_newyork
+
 ```
 
 **Observations**:
 
-- Note your observations here!
+- Currently (7/28/2020), Trousdale TN has the most cases per 100,000 residents, and it has a population of 9,573. 
+- Similarly, Hancock GA has the most deaths per 100,000 residents, and it has a population of 8,535.
+- New York City does not show up in the top 10; it did not manage to get a population value because it lacks a fips value, as it actually occupies multiple counties. Or I screwed up.
 
 ## Self-directed EDA
 <!-- ------------------------- -->
@@ -270,20 +284,20 @@ These data get a little busy, so it's helpful to know a few `ggplot` tricks to h
 
 ```{r ma-example}
 ## NOTE: No need to change this; just an example
-#df_normalized %>%
-#  filter(state == "Massachusetts") %>%
+df_normalized %>%
+  filter(state == "Massachusetts") %>%
 
-#  ggplot(
-#    aes(date, cases_perk, color = fct_reorder2(county, date, cases_perk))
-#  ) +
-#  geom_line() +
-#  scale_y_log10(labels = scales::label_number_si()) +
-#  scale_color_discrete(name = "County") +
-#  theme_minimal() +
-#  labs(
-#    x = "Date",
-#    y = "Cases (per 100,000 persons)"
-#  )
+  ggplot(
+    aes(date, cases_perk, color = fct_reorder2(county, date, cases_perk))
+  ) +
+  geom_line() +
+  scale_y_log10(labels = scales::label_number_si()) +
+  scale_color_discrete(name = "County") +
+  theme_minimal() +
+  labs(
+    x = "Date",
+    y = "Cases (per 100,000 persons)"
+  )
 ```
 
 *Tricks*:
@@ -308,3 +322,35 @@ The NYT repo documents some [geographic exceptions](https://github.com/nytimes/c
 [2] FIPS stands for [Federal Information Processing Standards](https://en.wikipedia.org/wiki/Federal_Information_Processing_Standards); these are computer standards issued by NIST for things such as government data.
 
 [3] Demographers often report statistics not in percentages (per 100 people), but rather in per 100,000 persons. This is [not always the case](https://stats.stackexchange.com/questions/12810/why-do-demographers-give-rates-per-100-000-people) though!
+
+# Appendix
+
+<!-- include-rubric -->
+# Grading Rubric
+<!-- -------------------------------------------------- -->
+
+Unlike exercises, **challenges will be graded**. The following rubrics define how you will be graded, both on an individual and team basis.
+
+## Individual
+<!-- ------------------------- -->
+
+| Category | Unsatisfactory | Satisfactory |
+|----------|----------------|--------------|
+| Effort | Some task __q__'s left unattempted | All task __q__'s attempted |
+| Observed | Did not document observations | Documented observations based on analysis |
+| Supported | Some observations not supported by analysis | All observations supported by analysis (table, graph, etc.) |
+| Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
+
+## Team
+<!-- ------------------------- -->
+
+| Category | Unsatisfactory | Satisfactory |
+|----------|----------------|--------------|
+| Documented | No team contributions to Wiki | Team contributed to Wiki |
+| Referenced | No team references in Wiki | At least one reference in Wiki to member report(s) |
+| Relevant | References unrelated to assertion, or difficult to find related analysis based on reference text | Reference text clearly points to relevant analysis |
+
+## Due Date
+<!-- ------------------------- -->
+
+All the deliverables stated in the rubrics above are due on the day of the class discussion of that exercise. See the [Syllabus](https://docs.google.com/document/d/1jJTh2DH8nVJd2eyMMoyNGroReo0BKcJrz1eONi3rPSc/edit?usp=sharing) for more information.
