@@ -1,7 +1,7 @@
 ---
 title: "Antibiotics"
 author: "Angela Sharer"
-date: 2020-07-26
+date: 2020-07-29
 output:
   github_document:
     toc: true
@@ -208,7 +208,7 @@ df_antibiotics2 %>%
   geom_hline(yintercept = 0.1, linetype = "dashed", color = "blue") +
   facet_grid(. ~ gram) +
   labs(
-    title = "MIC of 3 antibiotics against various bacteria",
+    title = "MIC of 3 antibiotics against various gram-negative and -positive bacteria",
     x = "Antibiotic",
     y = "Minimum inhibitory concentration (MIC)"
   )

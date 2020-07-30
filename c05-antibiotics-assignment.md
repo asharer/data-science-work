@@ -1,7 +1,7 @@
 Antibiotics
 ================
 Angela Sharer
-2020-07-26
+2020-07-29
 
   - [Visualization](#visualization)
       - [Purpose: Compare Effectiveness](#purpose-compare-effectiveness)
@@ -333,7 +333,7 @@ df_antibiotics2 %>%
   geom_hline(yintercept = 0.1, linetype = "dashed", color = "blue") +
   facet_grid(. ~ gram) +
   labs(
-    title = "MIC of 3 antibiotics against various bacteria",
+    title = "MIC of 3 antibiotics against various gram-negative and -positive bacteria",
     x = "Antibiotic",
     y = "Minimum inhibitory concentration (MIC)"
   )
