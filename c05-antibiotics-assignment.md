@@ -29,14 +29,14 @@ of ideas to the table\!
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
     ## ✓ tibble  3.0.1     ✓ dplyr   1.0.0
     ## ✓ tidyr   1.1.0     ✓ stringr 1.4.0
     ## ✓ readr   1.3.1     ✓ forcats 0.5.0
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -171,6 +171,7 @@ df_antibiotics2 %>%
   ggplot(aes(drug, MIC)) +
   geom_boxplot() +
   coord_trans(y = "log") +
+  geom_hline(yintercept = 0.1, linetype = "dashed", color = "blue") +
   labs(
     title = "MIC of 3 antibiotics against various bacteria",
     x = "Antibiotic",
@@ -178,11 +179,19 @@ df_antibiotics2 %>%
   )
 ```
 
-![](c05-antibiotics-assignment_files/figure-gfm/q1-task-1.png)<!-- -->
+![](c05-antibiotics-assignment_files/figure-gfm/q1-task%20boxplot%20antibiotic%20vs%20MIC-1.png)<!-- -->
+
+**Observations**:
+
+  - The effectiveness of penicillin varies more than the other two
+    antibiotics.
+  - Neomycin seems to be more effective on average than either of the
+    other drugs (that is, it has the lowest average MIC value against
+    the bacteria in this dataset).
+
+<!-- end list -->
 
 ``` r
-## NOTE: I'd like to rearrange the ordering of drugs here but I need to double check how I can do that... I know there is a way!
-
 df_antibiotics2 %>%
   ggplot(aes(MIC, drug)) +
   geom_col(aes(fill = effective)) +
@@ -196,17 +205,27 @@ df_antibiotics2 %>%
   )
 ```
 
-![](c05-antibiotics-assignment_files/figure-gfm/q1-task-2.png)<!-- -->
+![](c05-antibiotics-assignment_files/figure-gfm/q1-task%20faceted%20col%20plot%20in%20the%20effective%20range-1.png)<!-- -->
 
 ``` r
 ## I've got a ton of clipping and overlapping text happening here. Not sure how to fix.
+```
 
+**Observations**:
+
+  - The antibiotics investigated here cannot effectively combat all of
+    these bacteria in humans. In fact, these antibiotics are only
+    effective against 12 of the 16 bacteria here.
+
+<!-- end list -->
+
+``` r
 df_antibiotics2 %>%
   ggplot(aes(MIC, bacteria, color = drug)) +
   geom_jitter(width = 0, height = 0.15) +
   coord_trans(x = "log") + 
   scale_color_discrete(name = "Antibiotic") +
-  geom_vline(xintercept = 0.01, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = 0.1, linetype = "dashed", color = "blue") +
   labs(
     title = "MIC of 3 antibiotics against each bacteria",
     x = "Minimum inhibitory concentration (MIC)",
@@ -214,24 +233,12 @@ df_antibiotics2 %>%
   ) 
 ```
 
-![](c05-antibiotics-assignment_files/figure-gfm/q1-task-3.png)<!-- -->
+![](c05-antibiotics-assignment_files/figure-gfm/q1-task%20jitter%20plot%20MIC%20vs%20bacteria-1.png)<!-- -->
 
 **Observations**:
 
   - Each of these antibiotics varies substantially in its effectiveness,
     depending on the bacteria in question.
-  - The effectiveness of penicillin varies more than the other two
-    antibiotics.
-  - The antibiotics investigated here cannot effectively combat all of
-    these bacteria in humans. In fact, these antibiotics are only
-    effective against 12 of the 16 bacteria here.
-  - Neomycin seems to be more effective on average than either of the
-    other drugs (that is, it has the lowest average MIC value against
-    the bacteria in this dataset).
-  - Streptomycin is only effective against one of these bacteria
-    (bacillus anthracis), but the other two antibiotics are even more
-    effective against that bacteria.
-  - Can you make any broad statements about antibiotic effectiveness?
 
 ## Purpose: Categorize Bacteria
 
@@ -256,7 +263,7 @@ df_antibiotics2 %>%
   geom_jitter(width = 0, height = 0.15) +
   coord_trans(x = "log") + 
   scale_color_discrete(name = "Antibiotic") +
-  geom_vline(xintercept = 0.01, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = 0.1, linetype = "dashed", color = "blue") +
   labs(
     title = "MIC of 3 antibiotics against each genus of bacteria",
     x = "Minimum inhibitory concentration (MIC)",
@@ -264,14 +271,21 @@ df_antibiotics2 %>%
   ) 
 ```
 
-![](c05-antibiotics-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
+![](c05-antibiotics-assignment_files/figure-gfm/q2-task%20jitter%20plot%20genus%20vs%20MIC-1.png)<!-- -->
+**Observations**:
+
+  - In many cases, there was only one species of bacteria representing
+    the entire genus.
+  - I don’t think my plot, above, is very useful.
+
+<!-- end list -->
 
 ``` r
 df_antibiotics2 %>%
   ggplot(aes(drug, MIC)) +
   geom_jitter(aes(color = genus), height = 0, width = 0.15) +
   coord_trans(y = "log") +
-  geom_hline(yintercept = 0.01, linetype = "dashed", color = "blue") +
+  geom_hline(yintercept = 0.1, linetype = "dashed", color = "blue") +
   labs(
     title = "MIC of 3 antibiotics against various bacteria",
     x = "Antibiotic",
@@ -279,16 +293,20 @@ df_antibiotics2 %>%
   )
 ```
 
-![](c05-antibiotics-assignment_files/figure-gfm/q2-task-2.png)<!-- -->
+![](c05-antibiotics-assignment_files/figure-gfm/q2-task%20jitter%20plot%20antiobiotic%20vs.%20MIC,%20genus-1.png)<!-- -->
+
+**Observations**:
+
+  - This also isn’t very helpful.
+
+<!-- end list -->
 
 ``` r
-## NOTE: I'd like to rearrange the ordering of drugs here but I need to double check how I can do that... I know there is a way!
-
 df_antibiotics2 %>%
   ggplot(aes(drug, MIC)) +
   geom_jitter(aes(color = gram), height = 0, width = 0.15) +
   coord_trans(y = "log") +
-  geom_hline(yintercept = 0.01, linetype = "dashed", color = "blue") +
+  geom_hline(yintercept = 0.1, linetype = "dashed", color = "blue") +
   labs(
     title = "MIC of 3 antibiotics against various bacteria",
     x = "Antibiotic",
@@ -296,14 +314,23 @@ df_antibiotics2 %>%
   )
 ```
 
-![](c05-antibiotics-assignment_files/figure-gfm/q2-task-3.png)<!-- -->
+![](c05-antibiotics-assignment_files/figure-gfm/q2-task%20jiitter%20plot,%20antibiotic%20vs.%20MIC,%20gram-1.png)<!-- -->
+
+**Observations**:
+
+  - These antibiotics are not effective against most of the
+    gram-negative bacteria in this dataset.
+  - However, these antibiotics are effective against most of the
+    gram-positive bacteria in this dataset.
+
+<!-- end list -->
 
 ``` r
 df_antibiotics2 %>%
   ggplot(aes(drug, MIC)) +
   geom_boxplot() +
   coord_trans(y = "log") +
-  geom_hline(yintercept = 0.01, linetype = "dashed", color = "blue") +
+  geom_hline(yintercept = 0.1, linetype = "dashed", color = "blue") +
   facet_grid(. ~ gram) +
   labs(
     title = "MIC of 3 antibiotics against various bacteria",
@@ -312,7 +339,7 @@ df_antibiotics2 %>%
   )
 ```
 
-![](c05-antibiotics-assignment_files/figure-gfm/q2-task-4.png)<!-- -->
+![](c05-antibiotics-assignment_files/figure-gfm/q2-task%20boxplot%20antibiotic%20vs%20MIC,%20gram-1.png)<!-- -->
 
 **Observations**:
 
