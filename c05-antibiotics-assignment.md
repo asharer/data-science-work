@@ -348,9 +348,11 @@ df_antibiotics2 %>%
     streptomycin have potential to be so as well (though their
     effectiveness against the gram-positive bacteria in this dataset
     varies more than pencillin’s does).
-  - These antibiotics work better on gram-positive bacteria, it seems;
-    and only neomycin is effective for use in humans against a
-    (particular) gram-negative bacteria.
+  - These antibiotics are more effective against the gram-positive
+    bacteria in this dataset; and only neomycin is effective for use in
+    humans against more than one of these gram-positive bacteria, while
+    streptomycin can only effectively combat one of them in humans, and
+    penicillin cannot effectively combat any of them in humans.
 
 # References
 
