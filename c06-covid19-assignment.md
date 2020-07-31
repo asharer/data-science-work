@@ -1,7 +1,7 @@
 COVID-19
 ================
 Angela Sharer
-2020-07-28
+2020-07-31
 
   - [The Big Picture](#the-big-picture)
   - [Get the Data](#get-the-data)
@@ -13,16 +13,25 @@ Angela Sharer
       - [Normalize](#normalize)
       - [Guided EDA](#guided-eda)
       - [Self-directed EDA](#self-directed-eda)
+          - [Comparing to New York City](#comparing-to-new-york-city)
+          - [Investigating counties where my family members
+            live](#investigating-counties-where-my-family-members-live)
+          - [Investigating counties where Team Zeta members
+            live](#investigating-counties-where-team-zeta-members-live)
+  - [Notes](#notes)
+  - [Appendix](#appendix)
+      - [Grading Rubric](#grading-rubric)
+          - [Individual](#individual)
+          - [Team](#team)
+          - [Due Date](#due-date)
+      - [Suggestions and tips from
+        Zach](#suggestions-and-tips-from-zach)
           - [Ideas](#ideas)
           - [Aside: Some visualization
             tricks](#aside-some-visualization-tricks)
           - [Geographic exceptions](#geographic-exceptions)
-  - [Notes](#notes)
-  - [Appendix](#appendix)
-  - [Grading Rubric](#grading-rubric)
-      - [Individual](#individual)
-      - [Team](#team)
-      - [Due Date](#due-date)
+          - [Code snippet from Zach, modified by
+            Angela](#code-snippet-from-zach-modified-by-angela)
 
 *Purpose*: We can’t *possibly* do a class on data science and *not* look
 at covid-19. Come on.
@@ -36,14 +45,14 @@ Get excited\!
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
     ## ✓ tibble  3.0.1     ✓ dplyr   1.0.0
     ## ✓ tidyr   1.1.0     ✓ stringr 1.4.0
     ## ✓ readr   1.3.1     ✓ forcats 0.5.0
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -215,7 +224,7 @@ df_pop %>% glimpse
 df_covid %>% glimpse
 ```
 
-    ## Rows: 379,550
+    ## Rows: 385,985
     ## Columns: 6
     ## $ date   <date> 2020-01-21, 2020-01-22, 2020-01-23, 2020-01-24, 2020-01-24, 2…
     ## $ county <chr> "Snohomish", "Snohomish", "Snohomish", "Cook", "Snohomish", "O…
@@ -364,17 +373,20 @@ Before turning you loose, let’s complete a couple guided EDA tasks.
 ## TASK: Compute mean and sd for cases_perk and deaths_perk
 df_normalized %>%
   summarize(
-    mean_cases_per100k = mean(cases_perk, na.rm=TRUE),
-    sd_cases_per100k = sd(cases_perk, na.rm=TRUE),
-    mean_deaths_per100k = mean(deaths_perk, na.rm=TRUE),
-    sd_deaths_per100k = sd(deaths_perk, na.rm=TRUE)
+    mean_cases_per100k = mean(cases_perk, na.rm = TRUE), 
+    sd_cases_per100k = sd(cases_perk, na.rm = TRUE),
+    mean_deaths_per100k = mean(deaths_perk, na.rm = TRUE),
+    sd_deaths_per100k = sd(deaths_perk, na.rm = TRUE)
     )
 ```
 
     ## # A tibble: 1 x 4
     ##   mean_cases_per100k sd_cases_per100k mean_deaths_per100k sd_deaths_per100k
     ##                <dbl>            <dbl>               <dbl>             <dbl>
-    ## 1               351.             658.                11.5              26.5
+    ## 1               361.             669.                11.7              26.7
+
+**Note**: Without `na.rm = TRUE`, all of these calculations return as
+`NA`, and so I know some data must be missing.
 
 **q7** Find the top 10 counties in terms of `cases_perk`, and the top 10
 in terms of `deaths_perk`. Report the population of each county along
@@ -394,16 +406,16 @@ top10_cases_perk_counties
     ## # A tibble: 10 x 9
     ##    date       county  state fips  cases deaths population cases_perk deaths_perk
     ##    <date>     <chr>   <chr> <chr> <dbl>  <dbl>      <dbl>      <dbl>       <dbl>
-    ##  1 2020-07-28 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
-    ##  2 2020-07-27 Trousd… Tenn… 47169  1561      6       9573     16306.        62.7
-    ##  3 2020-07-24 Trousd… Tenn… 47169  1560      6       9573     16296.        62.7
-    ##  4 2020-07-25 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
-    ##  5 2020-07-26 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
-    ##  6 2020-07-23 Trousd… Tenn… 47169  1556      6       9573     16254.        62.7
-    ##  7 2020-07-22 Trousd… Tenn… 47169  1548      6       9573     16170.        62.7
-    ##  8 2020-07-21 Trousd… Tenn… 47169  1547      6       9573     16160.        62.7
-    ##  9 2020-07-18 Trousd… Tenn… 47169  1543      6       9573     16118.        62.7
-    ## 10 2020-07-19 Trousd… Tenn… 47169  1543      6       9573     16118.        62.7
+    ##  1 2020-07-30 Trousd… Tenn… 47169  1567      6       9573     16369.        62.7
+    ##  2 2020-07-28 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
+    ##  3 2020-07-29 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
+    ##  4 2020-07-27 Trousd… Tenn… 47169  1561      6       9573     16306.        62.7
+    ##  5 2020-07-24 Trousd… Tenn… 47169  1560      6       9573     16296.        62.7
+    ##  6 2020-07-25 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
+    ##  7 2020-07-26 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
+    ##  8 2020-07-23 Trousd… Tenn… 47169  1556      6       9573     16254.        62.7
+    ##  9 2020-07-22 Trousd… Tenn… 47169  1548      6       9573     16170.        62.7
+    ## 10 2020-07-21 Trousd… Tenn… 47169  1547      6       9573     16160.        62.7
 
 ``` r
 ## TASK: Find the top 10 deaths_perk counties; report populations as well
@@ -422,45 +434,34 @@ top10_deaths_perk_counties
     ##  3 2020-07-26 Hancock Geor… 13141   259     34       8535      3035.        398.
     ##  4 2020-07-27 Hancock Geor… 13141   264     34       8535      3093.        398.
     ##  5 2020-07-28 Hancock Geor… 13141   272     34       8535      3187.        398.
-    ##  6 2020-07-08 Hancock Geor… 13141   224     33       8535      2624.        387.
-    ##  7 2020-07-09 Hancock Geor… 13141   225     33       8535      2636.        387.
-    ##  8 2020-07-10 Hancock Geor… 13141   226     33       8535      2648.        387.
-    ##  9 2020-07-11 Hancock Geor… 13141   227     33       8535      2660.        387.
-    ## 10 2020-07-12 Hancock Geor… 13141   228     33       8535      2671.        387.
+    ##  6 2020-07-29 Hancock Geor… 13141   275     34       8535      3222.        398.
+    ##  7 2020-07-30 Hancock Geor… 13141   280     34       8535      3281.        398.
+    ##  8 2020-07-08 Hancock Geor… 13141   224     33       8535      2624.        387.
+    ##  9 2020-07-09 Hancock Geor… 13141   225     33       8535      2636.        387.
+    ## 10 2020-07-10 Hancock Geor… 13141   226     33       8535      2648.        387.
 
 ``` r
-df_newyork <-
+df_newyorkcity <-
   df_normalized %>%
-  filter(state == "New York") %>%
-  group_by(county) %>%
-  summarize(
-    max_cases = max(cases), 
-    max_deaths = max(deaths), 
-    max_pop = max(population)
-    ) %>%
-  arrange(desc(max_deaths))
+  filter(county == "New York City") %>%
+  arrange(desc(deaths)) %>%
+  head(10)
+df_newyorkcity
 ```
 
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-
-``` r
-df_newyork
-```
-
-    ## # A tibble: 59 x 4
-    ##    county        max_cases max_deaths max_pop
-    ##    <chr>             <dbl>      <dbl>   <dbl>
-    ##  1 New York City    228939      22977      NA
-    ##  2 Nassau            43059       2706 1356564
-    ##  3 Suffolk           43024       2043 1487901
-    ##  4 Westchester       35837       1577  968815
-    ##  5 Unknown               0       1170      NA
-    ##  6 Erie               8364        619  919866
-    ##  7 Rockland          13845        470  323686
-    ##  8 Orange            11039        403  378227
-    ##  9 Monroe             4633        266  744248
-    ## 10 Onondaga           3419        187  464242
-    ## # … with 49 more rows
+    ## # A tibble: 10 x 9
+    ##    date       county state fips   cases deaths population cases_perk deaths_perk
+    ##    <date>     <chr>  <chr> <chr>  <dbl>  <dbl>      <dbl>      <dbl>       <dbl>
+    ##  1 2020-07-30 New Y… New … <NA>  229551  22996         NA         NA          NA
+    ##  2 2020-07-29 New Y… New … <NA>  229237  22982         NA         NA          NA
+    ##  3 2020-07-28 New Y… New … <NA>  228939  22977         NA         NA          NA
+    ##  4 2020-07-27 New Y… New … <NA>  228740  22970         NA         NA          NA
+    ##  5 2020-07-26 New Y… New … <NA>  228445  22956         NA         NA          NA
+    ##  6 2020-07-25 New Y… New … <NA>  228220  22947         NA         NA          NA
+    ##  7 2020-07-24 New Y… New … <NA>  227882  22936         NA         NA          NA
+    ##  8 2020-07-23 New Y… New … <NA>  227517  22934         NA         NA          NA
+    ##  9 2020-07-22 New Y… New … <NA>  227130  22899         NA         NA          NA
+    ## 10 2020-07-21 New Y… New … <NA>  226779  22895         NA         NA          NA
 
 **Observations**:
 
@@ -470,7 +471,7 @@ df_newyork
     it has a population of 8,535.
   - New York City does not show up in the top 10; it did not manage to
     get a population value because it lacks a fips value, as it actually
-    occupies multiple counties. Or I screwed up.
+    occupies multiple counties.
 
 ## Self-directed EDA
 
@@ -479,7 +480,392 @@ df_newyork
 **q8** Drive your own ship: You’ve just put together a very rich
 dataset; you now get to explore\! Pick your own direction and generate
 at least one punchline figure to document an interesting finding. I give
-a couple tips & ideas below:
+a couple tips & ideas below.
+
+### Comparing to New York City
+
+To compare to New York City, I need to first add in its population data.
+
+``` r
+## First, I'm finding the NYC population
+df_nyc_pop <-
+  df_q3 %>% ## This is my dataset of population by county
+  filter(
+    fips == 36061 | ## New York (Manhattan); this line is equivalent to 
+                    ## `Geographic Area Name` == "New York County, New York"
+    fips == 36047 | ## Kings
+    fips == 36081 | ## Queens
+    fips == 36005 | ## Bronx
+    fips == 36085   ## Richmond
+  ) %>%
+  summarize(population = sum(`Estimate!!Total`)) %>%
+  mutate(county = "New York City") 
+
+## Next, I'm separating the COVID dataset into NYC-only...
+df_covid_nyc <- 
+  df_covid %>%
+  filter(county == "New York City")
+## ... And everything except NYC
+df_covid_exceptnyc <-
+  df_covid %>%
+  filter(county != "New York City")
+
+## Now, our everything-except-NYC data needs population info...
+df_data_without_nyc <-
+  df_covid_exceptnyc %>%
+  left_join(df_q3, by = "fips") %>%
+  select(
+    date,
+    county,
+    state,
+    fips,
+    cases,
+    deaths,
+    population = `Estimate!!Total`
+  )
+## ... And so does our NYC data
+df_data_with_nyc <-
+  df_covid_nyc %>%
+  left_join(df_nyc_pop, by = "county")
+
+## Now we are ready to add NYC back in!
+df_data_nyc_fixed <-
+  df_data_without_nyc %>%
+  bind_rows(df_data_with_nyc)
+
+## Now, let's normalize again, and add a few other variables I've been wanting.
+df_normalized_full <-
+  df_data_nyc_fixed %>%
+  mutate(
+    cases_perk = 100000 * cases / population,
+    deaths_perk = 100000 * deaths / population
+    ) %>%
+  unite(col = "location", county, state, sep = ", ", remove = FALSE) %>%
+  group_by(location) %>%
+  mutate(
+    max_cases_perk = max(cases_perk), 
+    max_deaths_perk = max(deaths_perk)
+  ) %>%
+  ungroup()
+```
+
+My new dataset is `df_normalized_full` (“full” is likely an
+overstatement, but at least NYC is fixed).
+
+Next, I’d like to see how NYC actually compares to the two counties I
+discovered earlier with the maximum cases per 100,000 and deaths per
+100,000.
+
+``` r
+df_normalized_full %>%
+  filter(
+    county == "Hancock" & state == "Georgia" |
+    county == "Trousdale" & state == "Tennessee" |
+    county == "New York City" & state == "New York"
+  ) %>%
+  group_by(county) %>%
+  summarize(max_cases_perk = max(cases_perk), max_deaths_perk = max(deaths_perk))
+```
+
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+
+    ## # A tibble: 3 x 3
+    ##   county        max_cases_perk max_deaths_perk
+    ##   <chr>                  <dbl>           <dbl>
+    ## 1 Hancock                3281.           398. 
+    ## 2 New York City          2719.           272. 
+    ## 3 Trousdale             16369.            62.7
+
+**Observations**:
+
+  - New York City no longer has the most cases *or* deaths per 100,000
+    persons.
+
+Let’s see which counties exceed New York City. I’ll start with the cases
+per 100,000 people.
+
+``` r
+df_normalized_full_nyc <-
+  df_normalized_full %>%
+  filter(county == "New York City" & state == "New York")
+
+nyc_max_cases_perk <-
+  df_normalized_full_nyc %>%
+  summarize(max_cases_perk = max(cases_perk))
+
+df_worse_than_nyc_cases_perk_obs <-
+  df_normalized_full %>%
+  filter(cases_perk >= as.double(nyc_max_cases_perk))
+
+df_worse_than_nyc_cases_perk_counties <-  
+  df_normalized_full %>%
+  semi_join(df_worse_than_nyc_cases_perk_obs, by = c("county", "state"))
+
+df_worse_than_nyc_cases_perk_counties %>%
+  ggplot(aes(date, cases_perk)) +
+  geom_line(aes(group = location)) +
+  geom_line(data = (df_normalized_full_nyc), color = "blue") +
+  labs(
+    title = "Counties with higher cases per 100,000 persons than NYC",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/worse%20than%20NYC%20cases%20perk-1.png)<!-- -->
+
+**Observations**:
+
+  - There are more counties here than I would have guessed. Originally I
+    colored the lines by county but the result was not comprehensible…
+  - I will explore other ways to visualize some of this data.
+
+<!-- end list -->
+
+``` r
+## TO DO!
+```
+
+Next, I’ll examine which counties have experienced more deaths per
+100,000 than New York City.
+
+``` r
+nyc_max_deaths_perk <-
+  df_normalized_full_nyc %>%
+  summarize(max_deaths_perk = max(deaths_perk))
+
+df_worse_than_nyc_deaths_perk_obs <-
+  df_normalized_full %>%
+  filter(deaths_perk >= as.double(nyc_max_deaths_perk))
+
+df_worse_than_nyc_deaths_perk_counties <-  
+  df_normalized_full %>%
+  semi_join(df_worse_than_nyc_deaths_perk_obs, by = c("county", "state"))
+
+df_worse_than_nyc_deaths_perk_counties %>%
+  ggplot(aes(date, deaths_perk)) +
+  geom_line(aes(color = fct_reorder(location, desc(max_deaths_perk)))) +
+  scale_color_discrete(name = "Location") +
+  labs(
+    title = "Counties with more deaths per 100,000 persons than NYC",
+    x = "Date",
+    y = "Deaths per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/worse%20than%20NYC%20deaths%20perk-1.png)<!-- -->
+
+**Observations**:
+
+  - Georgia does not seem to be handling COVID-19 very well. As of
+    7/31/2020, 4 of 7 counties with more deaths per 100,000 people than
+    New York City are located in Georgia; these are the 4 counties with
+    the most deaths per 100,000 in the country.
+  - New Mexico, Mississippi, and Virginia each have one county (as of
+    7/31/2020) with more deaths per 100,000 than New York City, as well.
+
+### Investigating counties where my family members live
+
+First, I’m making a new dataframe that I can manipulate, which includes
+the counties where I live, and some of my immediately family members
+live.
+
+``` r
+df_angela_counties <-
+  df_normalized_full %>%
+  filter (
+    county == "King" & state == "Washington" | 
+    county == "Wake" & state == "North Carolina" |
+    county == "Durham" & state == "North Carolina" |
+    county == "St. Tammany" & state == "Louisiana" #|
+#    county == "Franklin" & state == "Alabama" |
+#    county == "Jefferson" & state == "Alabama"
+  ) 
+```
+
+Now I’d like to compare the cases per 100,000 people in these counties.
+
+``` r
+df_angela_counties %>%
+  ggplot(aes(date, cases_perk)) +
+  geom_line(aes(color = fct_reorder2(location, date, cases_perk))) +
+  scale_color_discrete(name = "County") +
+  theme_minimal() +
+  labs(
+    title = "Cases per 100,000 persons in several US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/cases_perk%20in%20the%20Angela%20counties-1.png)<!-- -->
+
+**Observations**:
+
+  - Cases of COVID-19 in King County, Washington (where I live) arose
+    earlier than those in St. Tammany Parish, Louisiana (where my
+    husband’s parents live; note that Louisiana uses “Parish” instead of
+    “County”) and either of the North Carolina counties (Wake County,
+    where my parents, brother, and his family live, and Durham County,
+    where my sister lives).
+  - However, cases per 100,000 persons in St. Tammany Parish surpassed
+    King County at the beginning of April (about 5 weeks after Mardi
+    Gras), Durham County surpassed King County in mid-May, and Wake
+    County surpassed King County at the end of June (about 4-5 weeks
+    after Memorial Day).
+  - *For some context, and without formally looking up any demographics
+    (I should do this), Durham county has a much larger population of
+    black people than Wake County does, even though they are adjacent,
+    and I would guess that both have a larger population of black people
+    than King County does. I’m less sure about St. Tammany Parish; I
+    have spent substantially less time there than any of these other
+    counties.*
+
+<!-- end list -->
+
+``` r
+df_angela_counties %>%
+  ggplot(aes(date, deaths_perk)) +
+  geom_line(aes(color = fct_reorder2(location, date, deaths_perk))) +
+  scale_color_discrete(name = "County") +
+  theme_minimal() +
+  labs(
+    title = "Deaths per 100,000 persons in several US counties",
+    x = "Date",
+    y = "Deaths per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/deaths_perk%20in%20the%20Angela%20counties-1.png)<!-- -->
+
+**Observations**:
+
+  - The differences in the trends here from the previous plot are
+    fascinating\!
+  - King County is doing much worse than the North Carolina counties
+    with respect to deaths per 100,000 persons, even though our case
+    rate is lower (and has been for months, in Durham’s case, and about
+    a month, in Wake’s case).
+  - St. Tammany, though, is doing *much* worse than all other counties
+    here. St. Tammany Parish is just outside New Orleans, and I believe
+    their hospital system became overwhelmed following Mardi Gras
+    (February 25). Deaths on a 6-week delay (a figure I have heard in
+    the news) would explain the spike in deaths per 100,000 persons in
+    early April.
+
+### Investigating counties where Team Zeta members live
+
+``` r
+## TO DO: Extract team zeta's counties
+
+df_zeta_counties <-
+  df_normalized_full %>%
+  filter (
+    county == "King" & state == "Washington" |          ## Angela
+    county == "Multnomah" & state == "Oregon" |         ## Ingrid
+    county == "San Mateo" & state == "California" |     ## James
+    county == "San Francisco" & state == "California" #| ## Jen
+#    county == "Norfolk" & state == "Massachusetts"      ## Olin
+  ) 
+```
+
+Now, I’d like to visualize the cases per 100,000 persons in the counties
+of interest to Team Zeta.
+
+``` r
+df_zeta_counties %>%
+  ggplot(aes(date, cases_perk)) +
+  geom_line(aes(color = fct_reorder2(location, date, cases_perk))) +
+  scale_color_discrete(name = "County") +
+  theme_minimal() +
+  labs(
+    title = "Cases per 100,000 persons in several US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/team%20zeta%20counties%20casesperk-1.png)<!-- -->
+
+Now, I’d like to visualize the deaths per 100,000 persons in the
+counties of interest to Team Zeta.
+
+``` r
+df_zeta_counties %>%
+  ggplot(aes(date, deaths_perk)) +
+  geom_line(aes(color = fct_reorder2(location, date, deaths_perk))) +
+  scale_color_discrete(name = "County") +
+  theme_minimal() +
+  labs(
+    title = "Cases per 100,000 persons in several US counties",
+    x = "Date",
+    y = "Deaths per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/team%20zeta%20counties%20deathsperk-1.png)<!-- -->
+
+# Notes
+
+<!-- -------------------------------------------------- -->
+
+\[1\] The census used to have many, many questions, but the ACS was
+created in 2010 to remove some questions and shorten the census. You can
+learn more in [this wonderful visual
+history](https://pudding.cool/2020/03/census-history/) of the census.
+
+\[2\] FIPS stands for [Federal Information Processing
+Standards](https://en.wikipedia.org/wiki/Federal_Information_Processing_Standards);
+these are computer standards issued by NIST for things such as
+government data.
+
+\[3\] Demographers often report statistics not in percentages (per 100
+people), but rather in per 100,000 persons. This is [not always the
+case](https://stats.stackexchange.com/questions/12810/why-do-demographers-give-rates-per-100-000-people)
+though\!
+
+# Appendix
+
+<!-- include-rubric -->
+
+## Grading Rubric
+
+<!-- -------------------------------------------------- -->
+
+Unlike exercises, **challenges will be graded**. The following rubrics
+define how you will be graded, both on an individual and team basis.
+
+### Individual
+
+<!-- ------------------------- -->
+
+| Category    | Unsatisfactory                                                                   | Satisfactory                                                               |
+| ----------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Effort      | Some task **q**’s left unattempted                                               | All task **q**’s attempted                                                 |
+| Observed    | Did not document observations                                                    | Documented observations based on analysis                                  |
+| Supported   | Some observations not supported by analysis                                      | All observations supported by analysis (table, graph, etc.)                |
+| Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
+
+### Team
+
+<!-- ------------------------- -->
+
+| Category   | Unsatisfactory                                                                                   | Satisfactory                                       |
+| ---------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
+| Documented | No team contributions to Wiki                                                                    | Team contributed to Wiki                           |
+| Referenced | No team references in Wiki                                                                       | At least one reference in Wiki to member report(s) |
+| Relevant   | References unrelated to assertion, or difficult to find related analysis based on reference text | Reference text clearly points to relevant analysis |
+
+### Due Date
+
+<!-- ------------------------- -->
+
+All the deliverables stated in the rubrics above are due on the day of
+the class discussion of that exercise. See the
+[Syllabus](https://docs.google.com/document/d/1jJTh2DH8nVJd2eyMMoyNGroReo0BKcJrz1eONi3rPSc/edit?usp=sharing)
+for more information.
+
+## Suggestions and tips from Zach
 
 ### Ideas
 
@@ -517,7 +903,7 @@ df_normalized %>%
   )
 ```
 
-    ## Warning: Removed 135 row(s) containing missing values (geom_path).
+    ## Warning: Removed 137 row(s) containing missing values (geom_path).
 
 ![](c06-covid19-assignment_files/figure-gfm/ma-example-1.png)<!-- -->
 
@@ -544,64 +930,82 @@ the data for New York, Kings, Queens, Bronx and Richmond counties are
 consolidated under “New York City” *without* a fips code. Thus the
 normalized counts in `df_normalized` are `NA`. To fix this, you would
 need to merge the population data from the New York City counties, and
-manually normalize the data.
+manually normalize the data. “All cases for the five boroughs of New
+York City (New York, Kings, Queens, Bronx and Richmond counties) are
+assigned to a single area called New York City.”
 
-# Notes
+### Code snippet from Zach, modified by Angela
 
-<!-- -------------------------------------------------- -->
+``` r
+df_nyc <-
+  df_normalized %>%
+  filter(county == "New York City") %>%
+  left_join(
+    .,
+    df_pop %>%
+    filter(
+      `Geographic Area Name` %in%
+      c(
+        "New York County, New York",
+        "Kings County, New York",
+        "Queens County, New York",
+        "Bronx County, New York",
+        "Richmond County, New York"
+      )
+    ) %>%
+    summarize(pop_nyc = sum(`Estimate!!Total`)),
+    by = character()
+  ) %>%
+  mutate(
+    cases_per100k = cases / pop_nyc * 100000,
+    deaths_per100k = deaths / pop_nyc * 100000
+  ) %>%
+  select(
+    date,
+    county,
+    state,
+    cases,
+    cases_per100k,
+    deaths,
+    deaths_per100k,
+    population = pop_nyc
+  )
+df_nyc
+```
 
-\[1\] The census used to have many, many questions, but the ACS was
-created in 2010 to remove some questions and shorten the census. You can
-learn more in [this wonderful visual
-history](https://pudding.cool/2020/03/census-history/) of the census.
+    ## # A tibble: 152 x 8
+    ##    date       county  state cases cases_per100k deaths deaths_per100k population
+    ##    <date>     <chr>   <chr> <dbl>         <dbl>  <dbl>          <dbl>      <dbl>
+    ##  1 2020-03-01 New Yo… New …     1        0.0118      0              0    8443713
+    ##  2 2020-03-02 New Yo… New …     1        0.0118      0              0    8443713
+    ##  3 2020-03-03 New Yo… New …     2        0.0237      0              0    8443713
+    ##  4 2020-03-04 New Yo… New …     2        0.0237      0              0    8443713
+    ##  5 2020-03-05 New Yo… New …     4        0.0474      0              0    8443713
+    ##  6 2020-03-06 New Yo… New …     5        0.0592      0              0    8443713
+    ##  7 2020-03-07 New Yo… New …    12        0.142       0              0    8443713
+    ##  8 2020-03-08 New Yo… New …    14        0.166       0              0    8443713
+    ##  9 2020-03-09 New Yo… New …    20        0.237       0              0    8443713
+    ## 10 2020-03-10 New Yo… New …    37        0.438       0              0    8443713
+    ## # … with 142 more rows
 
-\[2\] FIPS stands for [Federal Information Processing
-Standards](https://en.wikipedia.org/wiki/Federal_Information_Processing_Standards);
-these are computer standards issued by NIST for things such as
-government data.
+``` r
+df_pop %>%
+    filter(
+      `Geographic Area Name` %in%
+      c(
+        "New York County, New York",
+        "Kings County, New York",
+        "Queens County, New York",
+        "Bronx County, New York",
+        "Richmond County, New York"
+      ))
+```
 
-\[3\] Demographers often report statistics not in percentages (per 100
-people), but rather in per 100,000 persons. This is [not always the
-case](https://stats.stackexchange.com/questions/12810/why-do-demographers-give-rates-per-100-000-people)
-though\!
-
-# Appendix
-
-<!-- include-rubric -->
-
-# Grading Rubric
-
-<!-- -------------------------------------------------- -->
-
-Unlike exercises, **challenges will be graded**. The following rubrics
-define how you will be graded, both on an individual and team basis.
-
-## Individual
-
-<!-- ------------------------- -->
-
-| Category    | Unsatisfactory                                                                   | Satisfactory                                                               |
-| ----------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Effort      | Some task **q**’s left unattempted                                               | All task **q**’s attempted                                                 |
-| Observed    | Did not document observations                                                    | Documented observations based on analysis                                  |
-| Supported   | Some observations not supported by analysis                                      | All observations supported by analysis (table, graph, etc.)                |
-| Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
-
-## Team
-
-<!-- ------------------------- -->
-
-| Category   | Unsatisfactory                                                                                   | Satisfactory                                       |
-| ---------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
-| Documented | No team contributions to Wiki                                                                    | Team contributed to Wiki                           |
-| Referenced | No team references in Wiki                                                                       | At least one reference in Wiki to member report(s) |
-| Relevant   | References unrelated to assertion, or difficult to find related analysis based on reference text | Reference text clearly points to relevant analysis |
-
-## Due Date
-
-<!-- ------------------------- -->
-
-All the deliverables stated in the rubrics above are due on the day of
-the class discussion of that exercise. See the
-[Syllabus](https://docs.google.com/document/d/1jJTh2DH8nVJd2eyMMoyNGroReo0BKcJrz1eONi3rPSc/edit?usp=sharing)
-for more information.
+    ## # A tibble: 5 x 4
+    ##   id            `Geographic Area Name`   `Estimate!!Tota… `Margin of Error!!Tot…
+    ##   <chr>         <chr>                               <dbl> <chr>                 
+    ## 1 0500000US360… Bronx County, New York            1437872 *****                 
+    ## 2 0500000US360… Kings County, New York            2600747 *****                 
+    ## 3 0500000US360… New York County, New Yo…          1632480 *****                 
+    ## 4 0500000US360… Queens County, New York           2298513 *****                 
+    ## 5 0500000US360… Richmond County, New Yo…           474101 *****
