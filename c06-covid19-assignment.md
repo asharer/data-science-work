@@ -373,13 +373,16 @@ Before turning you loose, let’s complete a couple guided EDA tasks.
 
 ``` r
 ## TASK: Compute mean and sd for cases_perk and deaths_perk
-df_normalized %>%
+df_q6 <-
+  df_normalized %>%
   summarize(
     mean_cases_per100k = mean(cases_perk, na.rm = TRUE), 
     sd_cases_per100k = sd(cases_perk, na.rm = TRUE),
     mean_deaths_per100k = mean(deaths_perk, na.rm = TRUE),
     sd_deaths_per100k = sd(deaths_perk, na.rm = TRUE)
     )
+
+df_q6
 ```
 
     ## # A tibble: 1 x 4
@@ -387,8 +390,13 @@ df_normalized %>%
     ##                <dbl>            <dbl>               <dbl>             <dbl>
     ## 1               366.             675.                11.8              26.9
 
-**Note**: Without `na.rm = TRUE`, all of these calculations return as
-`NA`, and so I know some data must be missing.
+**Observations**:
+
+  - Without `na.rm = TRUE`, all of these calculations return as `NA`,
+    and so I know some data must be missing.
+  - The standard deviation for both cases per 100,000 *and* deaths per
+    100,000 is substantially higher than the respective mean. There’s
+    still a lot of variation happening county to county.
 
 **q7** Find the top 10 counties in terms of `cases_perk`, and the top 10
 in terms of `deaths_perk`. Report the population of each county along
@@ -398,49 +406,97 @@ the top? Why or why not?
 
 ``` r
 ## TASK: Find the top 10 max cases_perk counties; report populations as well
+mean_cases_per100k <-  
+  df_q6 %>%
+  select(mean_cases_per100k) %>%
+  as.double()
+
+mean_deaths_per100k <-  
+  df_q6 %>%
+  select(mean_deaths_per100k) %>%
+  as.double()
+
+
+
 top10_cases_perk_counties <-
   df_normalized %>%
-  arrange(desc(cases_perk)) %>%
-  head(10)
+  group_by(state, county) %>%
+  summarize(
+    state = first(state),
+    max_cases_perk = max(cases_perk), 
+    max_deaths_perk = max(deaths_perk), 
+    population = mean(population)
+  ) %>%
+  arrange(desc(max_cases_perk)) %>%
+  head(10) %>%
+  mutate(
+    pct_over_mean_cases_perk = max_cases_perk / mean_cases_per100k,
+    pct_over_mean_deaths_perk = max_deaths_perk / mean_deaths_per100k
+  )
+```
+
+    ## `summarise()` regrouping output by 'state' (override with `.groups` argument)
+
+``` r
 top10_cases_perk_counties
 ```
 
-    ## # A tibble: 10 x 9
-    ##    date       county  state fips  cases deaths population cases_perk deaths_perk
-    ##    <date>     <chr>   <chr> <chr> <dbl>  <dbl>      <dbl>      <dbl>       <dbl>
-    ##  1 2020-07-31 Trousd… Tenn… 47169  1570      6       9573     16400.        62.7
-    ##  2 2020-07-30 Trousd… Tenn… 47169  1567      6       9573     16369.        62.7
-    ##  3 2020-07-28 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
-    ##  4 2020-07-29 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
-    ##  5 2020-07-27 Trousd… Tenn… 47169  1561      6       9573     16306.        62.7
-    ##  6 2020-07-24 Trousd… Tenn… 47169  1560      6       9573     16296.        62.7
-    ##  7 2020-07-25 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
-    ##  8 2020-07-26 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
-    ##  9 2020-07-23 Trousd… Tenn… 47169  1556      6       9573     16254.        62.7
-    ## 10 2020-07-22 Trousd… Tenn… 47169  1548      6       9573     16170.        62.7
+    ## # A tibble: 10 x 7
+    ## # Groups:   state [7]
+    ##    state county max_cases_perk max_deaths_perk population pct_over_mean_c…
+    ##    <chr> <chr>           <dbl>           <dbl>      <dbl>            <dbl>
+    ##  1 Tenn… Trous…         16400.            62.7       9573             44.8
+    ##  2 Tenn… Lake           11095.             0         7526             30.3
+    ##  3 Arka… Lee             9385.            63.8       9398             25.6
+    ##  4 Nebr… Dakota          9357.           207.       20317             25.6
+    ##  5 Iowa  Buena…          8796.            59.2      20260             24.0
+    ##  6 Arka… Linco…          8507.            80.3      13695             23.2
+    ##  7 Minn… Nobles          7958.            27.5      21839             21.7
+    ##  8 Alas… Brist…          7079.             0          890             19.3
+    ##  9 Loui… East …          6824.            13.8       7225             18.6
+    ## 10 Nebr… Colfax          6431.            46.5      10760             17.6
+    ## # … with 1 more variable: pct_over_mean_deaths_perk <dbl>
 
 ``` r
 ## TASK: Find the top 10 deaths_perk counties; report populations as well
 top10_deaths_perk_counties <-
   df_normalized %>%
-  arrange(desc(deaths_perk)) %>%
-  head(10)
+  group_by(state, county) %>%
+  summarize(
+    state = first(state),
+    max_cases_perk = max(cases_perk), 
+    max_deaths_perk = max(deaths_perk), 
+    population = mean(population)
+  ) %>%
+  arrange(desc(max_deaths_perk)) %>%
+  head(10) %>%
+  mutate(
+    pct_over_mean_cases_perk = max_cases_perk / mean_cases_per100k,
+    pct_over_mean_deaths_perk = max_deaths_perk / mean_deaths_per100k
+  )
+```
+
+    ## `summarise()` regrouping output by 'state' (override with `.groups` argument)
+
+``` r
 top10_deaths_perk_counties
 ```
 
-    ## # A tibble: 10 x 9
-    ##    date       county  state fips  cases deaths population cases_perk deaths_perk
-    ##    <date>     <chr>   <chr> <chr> <dbl>  <dbl>      <dbl>      <dbl>       <dbl>
-    ##  1 2020-07-24 Hancock Geor… 13141   253     34       8535      2964.        398.
-    ##  2 2020-07-25 Hancock Geor… 13141   255     34       8535      2988.        398.
-    ##  3 2020-07-26 Hancock Geor… 13141   259     34       8535      3035.        398.
-    ##  4 2020-07-27 Hancock Geor… 13141   264     34       8535      3093.        398.
-    ##  5 2020-07-28 Hancock Geor… 13141   272     34       8535      3187.        398.
-    ##  6 2020-07-29 Hancock Geor… 13141   275     34       8535      3222.        398.
-    ##  7 2020-07-30 Hancock Geor… 13141   280     34       8535      3281.        398.
-    ##  8 2020-07-31 Hancock Geor… 13141   280     34       8535      3281.        398.
-    ##  9 2020-07-08 Hancock Geor… 13141   224     33       8535      2624.        387.
-    ## 10 2020-07-09 Hancock Geor… 13141   225     33       8535      2636.        387.
+    ## # A tibble: 10 x 7
+    ## # Groups:   state [5]
+    ##    state county max_cases_perk max_deaths_perk population pct_over_mean_c…
+    ##    <chr> <chr>           <dbl>           <dbl>      <dbl>            <dbl>
+    ##  1 Geor… Hanco…          3281.            398.       8535             8.96
+    ##  2 Geor… Rando…          3626.            367.       7087             9.91
+    ##  3 Geor… Terre…          3262.            339.       8859             8.91
+    ##  4 Geor… Early           3305.            309.      10348             9.03
+    ##  5 New … McKin…          5474.            301.      72849            15.0 
+    ##  6 Miss… Nesho…          4037.            296.      29376            11.0 
+    ##  7 Virg… Galax…          4986.            286.       6638            13.6 
+    ##  8 Virg… Empor…          3048.            279.       5381             8.33
+    ##  9 New … Essex           2486.            265.     793555             6.79
+    ## 10 Miss… Holmes          4564.            254.      18075            12.5 
+    ## # … with 1 more variable: pct_over_mean_deaths_perk <dbl>
 
 ``` r
 df_newyorkcity <-
@@ -467,13 +523,19 @@ df_newyorkcity
 
 **Observations**:
 
-  - Currently (7/28/2020), Trousdale TN has the most cases per 100,000
-    residents, and it has a population of 9,573.
+  - Currently (8/1/2020), Trousdale TN has the most cases per 100,000
+    residents, and it has a population of 9,573. It has 44.8 times more
+    cases per 100,000 persons than the mean.  
   - Similarly, Hancock GA has the most deaths per 100,000 residents, and
-    it has a population of 8,535.
+    it has a population of 8,535. It has 33.9 timies more deaths per
+    100,000 persons than the mean.
   - New York City does not show up in the top 10; it did not manage to
     get a population value because it lacks a fips value, as it actually
-    occupies multiple counties.
+    occupies multiple counties. (I will fix this later. My fix will not
+    put it in the top 10 for cases per 100,000 persons, but for now, it
+    remains in the top 10 for deaths per 100,000 persons. Based on the
+    cases data, though, it will likely not be long before NYC drops out
+    of the top 10 for deaths per 100,000, as well.)
 
 ## Self-directed EDA
 
@@ -554,34 +616,137 @@ df_normalized_full <-
 My new dataset is `df_normalized_full` (“full” is likely an
 overstatement, but at least NYC is fixed).
 
-Next, I’d like to see how NYC actually compares to the two counties I
-discovered earlier with the maximum cases per 100,000 and deaths per
+Next, I’d like to see how NYC actually compares to the top two counties
+I discovered earlier with the maximum cases per 100,000 and deaths per
 100,000.
+
+``` r
+df_q6_full <-
+  df_normalized_full %>%
+  summarize(
+    mean_cases_per100k = mean(cases_perk, na.rm = TRUE), 
+    sd_cases_per100k = sd(cases_perk, na.rm = TRUE),
+    mean_deaths_per100k = mean(deaths_perk, na.rm = TRUE),
+    sd_deaths_per100k = sd(deaths_perk, na.rm = TRUE)
+    )
+
+mean_cases_per100k_full <-  
+  df_q6_full %>%
+  select(mean_cases_per100k) %>%
+  as.double()
+
+mean_deaths_per100k_full <-  
+  df_q6_full %>%
+  select(mean_deaths_per100k) %>%
+  as.double()
+
+top10_cases_perk_counties_full <-
+  df_normalized_full %>%
+  group_by(state, county) %>%
+  summarize(
+    state = first(state),
+    max_cases_perk = max(cases_perk), 
+    max_deaths_perk = max(deaths_perk), 
+    population = mean(population)
+  ) %>%
+  arrange(desc(max_cases_perk)) %>%
+  head(10) %>%
+  mutate(
+    pct_over_mean_cases_perk = max_cases_perk / mean_cases_per100k_full,
+    pct_over_mean_deaths_perk = max_deaths_perk / mean_deaths_per100k_full
+  )
+```
+
+    ## `summarise()` regrouping output by 'state' (override with `.groups` argument)
+
+``` r
+top10_cases_perk_counties_full
+```
+
+    ## # A tibble: 10 x 7
+    ## # Groups:   state [7]
+    ##    state county max_cases_perk max_deaths_perk population pct_over_mean_c…
+    ##    <chr> <chr>           <dbl>           <dbl>      <dbl>            <dbl>
+    ##  1 Tenn… Trous…         16400.            62.7       9573             44.7
+    ##  2 Tenn… Lake           11095.             0         7526             30.3
+    ##  3 Arka… Lee             9385.            63.8       9398             25.6
+    ##  4 Nebr… Dakota          9357.           207.       20317             25.5
+    ##  5 Iowa  Buena…          8796.            59.2      20260             24.0
+    ##  6 Arka… Linco…          8507.            80.3      13695             23.2
+    ##  7 Minn… Nobles          7958.            27.5      21839             21.7
+    ##  8 Alas… Brist…          7079.             0          890             19.3
+    ##  9 Loui… East …          6824.            13.8       7225             18.6
+    ## 10 Nebr… Colfax          6431.            46.5      10760             17.5
+    ## # … with 1 more variable: pct_over_mean_deaths_perk <dbl>
+
+``` r
+## TASK: Find the top 10 deaths_perk counties; report populations as well
+top10_deaths_perk_counties_full <-
+  df_normalized_full %>%
+  group_by(state, county) %>%
+  summarize(
+    state = first(state),
+    max_cases_perk = max(cases_perk), 
+    max_deaths_perk = max(deaths_perk), 
+    population = mean(population)
+  ) %>%
+  arrange(desc(max_deaths_perk)) %>%
+  head(10) %>%
+  mutate(
+    pct_over_mean_cases_perk = max_cases_perk / mean_cases_per100k_full,
+    pct_over_mean_deaths_perk = max_deaths_perk / mean_deaths_per100k_full
+  )
+```
+
+    ## `summarise()` regrouping output by 'state' (override with `.groups` argument)
+
+``` r
+top10_deaths_perk_counties_full
+```
+
+    ## # A tibble: 10 x 7
+    ## # Groups:   state [6]
+    ##    state county max_cases_perk max_deaths_perk population pct_over_mean_c…
+    ##    <chr> <chr>           <dbl>           <dbl>      <dbl>            <dbl>
+    ##  1 Geor… Hanco…          3281.            398.       8535             8.95
+    ##  2 Geor… Rando…          3626.            367.       7087             9.89
+    ##  3 Geor… Terre…          3262.            339.       8859             8.90
+    ##  4 Geor… Early           3305.            309.      10348             9.02
+    ##  5 New … McKin…          5474.            301.      72849            14.9 
+    ##  6 Miss… Nesho…          4037.            296.      29376            11.0 
+    ##  7 Virg… Galax…          4986.            286.       6638            13.6 
+    ##  8 Virg… Empor…          3048.            279.       5381             8.32
+    ##  9 New … New Y…          2722.            272.    8443713             7.43
+    ## 10 New … Essex           2486.            265.     793555             6.78
+    ## # … with 1 more variable: pct_over_mean_deaths_perk <dbl>
 
 ``` r
 df_normalized_full %>%
   filter(
-    county == "Hancock" & state == "Georgia" |
-    county == "Trousdale" & state == "Tennessee" |
+#    county == "Hancock" & state == "Georgia" |
+#    county == "Trousdale" & state == "Tennessee" |
     county == "New York City" & state == "New York"
   ) %>%
-  group_by(county) %>%
-  summarize(max_cases_perk = max(cases_perk), max_deaths_perk = max(deaths_perk))
+#  group_by(county) %>%
+  summarize(
+    max_cases_perk = max(cases_perk), 
+    max_deaths_perk = max(deaths_perk), 
+    population = max(population)
+  )
 ```
 
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-
-    ## # A tibble: 3 x 3
-    ##   county        max_cases_perk max_deaths_perk
-    ##   <chr>                  <dbl>           <dbl>
-    ## 1 Hancock                3281.           398. 
-    ## 2 New York City          2722.           272. 
-    ## 3 Trousdale             16400.            62.7
+    ## # A tibble: 1 x 3
+    ##   max_cases_perk max_deaths_perk population
+    ##            <dbl>           <dbl>      <dbl>
+    ## 1          2722.            272.    8443713
 
 **Observations**:
 
   - New York City no longer has the most cases *or* deaths per 100,000
     persons.
+  - For now (8/1/2020), it still appears in the top 10 for deaths per
+    100,000 persons, but based on the cases data (plot to follow), it
+    may not be long before it is surpassed by several other counties.
 
 Let’s see which counties exceed New York City. I’ll start with the cases
 per 100,000 people.
@@ -619,14 +784,18 @@ df_worse_than_nyc_cases_perk_counties %>%
 **Observations**:
 
   - There are more counties here than I would have guessed. Originally I
-    colored the lines by county but the result was not comprehensible…
-  - I will explore other ways to visualize some of this data.
+    colored the lines by county, but the legend was unmanageable.
+  - I wish to explore other ways to visualize some of this data… But I’m
+    running out of time. (Zach, I’d be curious to learn where you would
+    go next with this.)
+  - For now, I’m just curious how many counties are being shown on this
+    graph.
 
 <!-- end list -->
 
 ``` r
 df_worse_than_nyc_cases_perk_counties %>%
-  summarize("Counties worse than NYC" = n_distinct(location) - 1)
+  summarize("Counties worse than NYC" = n_distinct(location) - 1) # I subtract 1 so that NYC itself is not included.
 ```
 
     ## # A tibble: 1 x 1
@@ -634,26 +803,10 @@ df_worse_than_nyc_cases_perk_counties %>%
     ##                       <dbl>
     ## 1                       171
 
-``` r
-df_worse_than_nyc_cases_perk_counties %>%
-  arrange(desc(max_cases_perk))
-```
+**Observations**:
 
-    ## # A tibble: 22,148 x 12
-    ##    date       location county state fips  cases deaths population cases_perk
-    ##    <date>     <chr>    <chr>  <chr> <chr> <dbl>  <dbl>      <dbl>      <dbl>
-    ##  1 2020-03-28 Trousda… Trous… Tenn… 47169     1      0       9573       10.4
-    ##  2 2020-03-29 Trousda… Trous… Tenn… 47169     1      0       9573       10.4
-    ##  3 2020-03-30 Trousda… Trous… Tenn… 47169     3      0       9573       31.3
-    ##  4 2020-03-31 Trousda… Trous… Tenn… 47169     3      0       9573       31.3
-    ##  5 2020-04-01 Trousda… Trous… Tenn… 47169     5      1       9573       52.2
-    ##  6 2020-04-02 Trousda… Trous… Tenn… 47169     6      1       9573       62.7
-    ##  7 2020-04-03 Trousda… Trous… Tenn… 47169     7      1       9573       73.1
-    ##  8 2020-04-04 Trousda… Trous… Tenn… 47169     7      1       9573       73.1
-    ##  9 2020-04-05 Trousda… Trous… Tenn… 47169     8      1       9573       83.6
-    ## 10 2020-04-06 Trousda… Trous… Tenn… 47169    11      1       9573      115. 
-    ## # … with 22,138 more rows, and 3 more variables: deaths_perk <dbl>,
-    ## #   max_cases_perk <dbl>, max_deaths_perk <dbl>
+  - As of 7/30, there were 164 counties, and as of 8/1, there are 171
+    counties with more cases per 100,000 than New York City.
 
 Next, I’ll examine which counties have experienced more deaths per
 100,000 than New York City.
@@ -708,8 +861,6 @@ df_angela_counties <-
     county == "Durham" & state == "North Carolina" |
     county == "St. Tammany" & state == "Louisiana" |
     county == "Orleans" & state == "Louisiana" #|
-#    county == "Franklin" & state == "Alabama" |
-#    county == "Jefferson" & state == "Alabama"
   ) 
 
 df_angela_counties 
@@ -761,15 +912,13 @@ df_angela_counties %>%
     Gras), Durham County surpassed King County in mid-May, and Wake
     County surpassed King County at the end of June (about 4-5 weeks
     after Memorial Day).
-  - *For some context, and without formally looking up any demographics
-    (I should do this), Durham county has a much larger population of
+  - *For some context, Durham county has a much larger proportion of
     black people than Wake County does, even though they are adjacent,
-    and I would guess that both have a larger population of black people
-    than King County does. I’m less sure about St. Tammany Parish; I
-    have spent substantially less time there than any of these other
-    counties.*
+    and both have a larger population of black people than King County
+    does. Similarly, Orleans Parish has a much larger proportion of
+    black people than St. Tammany Parish does.*
 
-<!-- end list -->
+Next, I will examine deaths per 100,000 persons.
 
 ``` r
 df_angela_counties %>%
@@ -788,18 +937,26 @@ df_angela_counties %>%
 
 **Observations**:
 
-  - The differences in the trends here from the previous plot are
-    fascinating\!
   - King County is doing much worse than the North Carolina counties
     with respect to deaths per 100,000 persons, even though our case
     rate is lower (and has been for months, in Durham’s case, and about
-    a month, in Wake’s case).
-  - St. Tammany, though, is doing *much* worse than all other counties
-    here. St. Tammany Parish is just outside New Orleans, and I believe
-    their hospital system became overwhelmed following Mardi Gras
-    (February 25). Deaths on a 6-week delay (a figure I have heard in
-    the news) would explain the spike in deaths per 100,000 persons in
-    early April.
+    a month, in Wake’s case). Likely this is due to King County’s early
+    outbreaks taking place in nursing homes, where the population was
+    more vulnerable, and more susceptible to death due to COVID-19.
+  - Orleans and St. Tammany, though, are doing *much* worse than all
+    other counties here. St. Tammany Parish is just outside New Orleans,
+    and I believe the region’s hospital system became overwhelmed
+    following Mardi Gras (February 25). Deaths on a 6-week delay (a
+    figure I have heard in the news) would explain the spike in deaths
+    per 100,000 persons in early April
+  - In addition to the racial differences I noted earlier, Orleans
+    Parish is home to more people living in poverty than St. Tammany
+    Parish, and conditions are likely more dense as well (Orleans Parish
+    contains the city center of New Orleans; St. Tammany Parish is the
+    suburbs to the north). Some of these factors, as well as the fact
+    that the largest Mardi Gras celebration occurred in Orleans Parish
+    itself, may explain some of the diisparity between these two
+    Louisiana Parishes.
 
 ### Investigating counties where Team Zeta members live
 
@@ -813,7 +970,6 @@ df_zeta_counties <-
     county == "Multnomah" & state == "Oregon" |         ## Ingrid
     county == "San Mateo" & state == "California" |     ## James
     county == "San Francisco" & state == "California" #| ## Jen
-#    county == "Norfolk" & state == "Massachusetts"      ## Olin
   ) 
 ```
 
@@ -835,6 +991,18 @@ df_zeta_counties %>%
 
 ![](c06-covid19-assignment_files/figure-gfm/team%20zeta%20counties%20casesperk-1.png)<!-- -->
 
+**Observations**: - Our west coast cities have relatively similiar
+curves here, though King County’s is a bit higher than the others for
+most of this time (I believe we had a bit of a head start, though there
+are likely other factors at play here, as well). - King County has
+recently brought our cases per 100,000 rate below the two California
+counties where James and Jen live; if time allowed, I would be curious
+to investigate demographic differences, mask usage trends, and
+differences in timing of executive orders related to the pandemic. (I
+don’t currently have time, though.) - Multnomah has been doing better
+than the rest of us, but I believe it is more suburban than any of the
+other counties here, which may help to explain the difference.
+
 Now, I’d like to visualize the deaths per 100,000 persons in the
 counties of interest to Team Zeta.
 
@@ -852,6 +1020,16 @@ df_zeta_counties %>%
 ```
 
 ![](c06-covid19-assignment_files/figure-gfm/team%20zeta%20counties%20deathsperk-1.png)<!-- -->
+
+**Observations**:
+
+  - King County remains the worst for deaths per 100,000 persons. The
+    early nursing home outbreak is likely a component of this, and
+    perhaps our earlier start. I would be curious to learn what other
+    factors may be at play here.
+  - In deaths per 100,000, San Francisco is faring much better than San
+    Mateo and Multnomah. Again, I wonder if demographics are at play
+    here, or what other factors may account for this difference.
 
 ### Team Zeta’s Tales of Two Counties
 
