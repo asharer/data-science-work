@@ -394,7 +394,12 @@ df_worse_than_nyc_cases_perk_counties %>%
 - I will explore other ways to visualize some of this data. 
 
 ```{r taking another run at counties with casesperk worse than nyc}
-## TO DO!
+df_worse_than_nyc_cases_perk_counties %>%
+  summarize("Counties worse than NYC" = n_distinct(location) - 1)
+df_worse_than_nyc_cases_perk_counties %>%
+  arrange(desc(max_cases_perk))
+
+
 ```
 
 
@@ -443,10 +448,13 @@ df_angela_counties <-
     county == "King" & state == "Washington" | 
     county == "Wake" & state == "North Carolina" |
     county == "Durham" & state == "North Carolina" |
-    county == "St. Tammany" & state == "Louisiana" #|
+    county == "St. Tammany" & state == "Louisiana" |
+    county == "Orleans" & state == "Louisiana" #|
 #    county == "Franklin" & state == "Alabama" |
 #    county == "Jefferson" & state == "Alabama"
   ) 
+
+df_angela_counties 
 ```
 
 Now I'd like to compare the cases per 100,000 people in these counties.
@@ -539,7 +547,7 @@ df_zeta_counties %>%
   scale_color_discrete(name = "County") +
   theme_minimal() +
   labs(
-    title = "Cases per 100,000 persons in several US counties",
+    title = "Deaths per 100,000 persons in several US counties",
     x = "Date",
     y = "Deaths per 100,000 persons"
   )
@@ -549,9 +557,227 @@ df_zeta_counties %>%
 
 
 
+### Team Zeta's Tales of Two Counties
+
+*Please see our presentation for all the observations. We've been sharing code to generate these graphs, and this isn't really meant to be part of my individual submission.*
+
+```{r q8-final counties from Ingrid}
+#So that everyone can run this code snippet
+df_q8 <- df_normalized_full 
+
+#Counties of interest
+final_counties <- c(27053, 27019, 37183, 37063, 22071, 22103)
+
+#Running Total and Ratio calculations
+df_final_counties <- df_q8 %>% 
+  filter(fips == final_counties) %>%
+  group_by(fips) %>% 
+  mutate(deathratio_perk = deaths_perk/cases_perk) %>%
+  ungroup() %>%
+  group_by(state) %>%
+  mutate(state_max_cases_perk = max(cases_perk))
+```
+
+Now, we visualize!
+
+```{r Tales of Two Counties - cases per100k graphs}
+# Cases 
+df_final_counties %>% 
+  ggplot(
+    aes(date, cases_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 cases per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )
+```
+
+```{r team zeta cases with stay home orders noted}
+# Cases with stay at home orders noted
+df_final_counties %>% 
+  ggplot(
+    aes(date, cases_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+
+  geom_vline(xintercept = as.Date('2020-03-23'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-30'), linetype = "dotted", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-27'), linetype = "dashed", color = "gray25") +
+  annotate(
+    "text", 
+    x = as.Date('2020-03-19'), 
+    angle = 90,
+    y = 1500, 
+    label = "Stay at Home orders issued (per state)",
+    color = "gray25"
+  ) +
+
+  theme_minimal() +
+  labs(
+    title = "COVID-19 cases per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )
+```
+
+```{r Team Zeta cases with holidays}
+
+# Cases with holidays noted  
+df_final_counties %>% 
+  ggplot(
+    aes(date, cases_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  
+  geom_vline(xintercept = as.Date('2020-02-25'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-10'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-02-25'), xmax = as.Date('2020-03-10'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-02-21'), 
+    angle = 90,
+    y = 2500, 
+    label = "Mardi Gras",
+    color = "gray25"
+  ) +
+  
+  geom_vline(xintercept = as.Date('2020-04-12'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-04-26'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-04-12'), xmax = as.Date('2020-04-26'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-04-08'), 
+    angle = 90,
+    y = 2500, 
+    label = "Easter Sunday",
+    color = "gray25"
+  ) +
+  geom_vline(xintercept = as.Date('2020-05-25'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-06-08'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-05-25'), xmax = as.Date('2020-06-08'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-05-21'), 
+    angle = 90,
+    y = 2500, 
+    label = "Memorial Day",
+    color = "gray25"
+  ) +
+  geom_vline(xintercept = as.Date('2020-07-04'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-07-18'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-07-04'), xmax = as.Date('2020-07-18'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-06-30'), 
+    angle = 90,
+    y = 2500, 
+    label = "4th of July",
+    color = "gray25"
+  ) +
+    
+  theme_minimal() +
+  labs(
+    title = "COVID-19 cases per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )  
+```
 
 
+```{r Tales of Two Counties deaths per100k plots}
+# Deaths
+df_final_counties %>% 
+  ggplot(
+    aes(date, deaths_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 deaths per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Deaths per 100,000 persons"
+  )
+```
 
+```{r deaths with stay home orders}
+
+df_final_counties %>% 
+  ggplot(
+    aes(date, deaths_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+
+  geom_vline(xintercept = as.Date('2020-03-23'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-30'), linetype = "dotted", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-27'), linetype = "dashed", color = "gray25") +
+  annotate(
+    "text", 
+    x = as.Date('2020-03-19'), 
+    angle = 90,
+    y = 75, 
+    label = "Stay at Home orders issued (per state)",
+    color = "gray25"
+  ) +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 deaths per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Deaths per 100,000 persons"
+  )
+
+```
+
+```{r zeta tales death ratio}
+# Death Ratio
+df_final_counties %>%
+  ggplot(
+    aes(date, deathratio_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 deaths per cases in select US counties",
+    x = "Date",
+    y = "Deaths per cases of COVID-19"
+  )
+```
 
 
 

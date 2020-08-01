@@ -18,6 +18,8 @@ Angela Sharer
             live](#investigating-counties-where-my-family-members-live)
           - [Investigating counties where Team Zeta members
             live](#investigating-counties-where-team-zeta-members-live)
+          - [Team Zeta’s Tales of Two
+            Counties](#team-zetas-tales-of-two-counties)
   - [Notes](#notes)
   - [Appendix](#appendix)
       - [Grading Rubric](#grading-rubric)
@@ -224,7 +226,7 @@ df_pop %>% glimpse
 df_covid %>% glimpse
 ```
 
-    ## Rows: 385,985
+    ## Rows: 389,202
     ## Columns: 6
     ## $ date   <date> 2020-01-21, 2020-01-22, 2020-01-23, 2020-01-24, 2020-01-24, 2…
     ## $ county <chr> "Snohomish", "Snohomish", "Snohomish", "Cook", "Snohomish", "O…
@@ -383,7 +385,7 @@ df_normalized %>%
     ## # A tibble: 1 x 4
     ##   mean_cases_per100k sd_cases_per100k mean_deaths_per100k sd_deaths_per100k
     ##                <dbl>            <dbl>               <dbl>             <dbl>
-    ## 1               361.             669.                11.7              26.7
+    ## 1               366.             675.                11.8              26.9
 
 **Note**: Without `na.rm = TRUE`, all of these calculations return as
 `NA`, and so I know some data must be missing.
@@ -406,16 +408,16 @@ top10_cases_perk_counties
     ## # A tibble: 10 x 9
     ##    date       county  state fips  cases deaths population cases_perk deaths_perk
     ##    <date>     <chr>   <chr> <chr> <dbl>  <dbl>      <dbl>      <dbl>       <dbl>
-    ##  1 2020-07-30 Trousd… Tenn… 47169  1567      6       9573     16369.        62.7
-    ##  2 2020-07-28 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
-    ##  3 2020-07-29 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
-    ##  4 2020-07-27 Trousd… Tenn… 47169  1561      6       9573     16306.        62.7
-    ##  5 2020-07-24 Trousd… Tenn… 47169  1560      6       9573     16296.        62.7
-    ##  6 2020-07-25 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
-    ##  7 2020-07-26 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
-    ##  8 2020-07-23 Trousd… Tenn… 47169  1556      6       9573     16254.        62.7
-    ##  9 2020-07-22 Trousd… Tenn… 47169  1548      6       9573     16170.        62.7
-    ## 10 2020-07-21 Trousd… Tenn… 47169  1547      6       9573     16160.        62.7
+    ##  1 2020-07-31 Trousd… Tenn… 47169  1570      6       9573     16400.        62.7
+    ##  2 2020-07-30 Trousd… Tenn… 47169  1567      6       9573     16369.        62.7
+    ##  3 2020-07-28 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
+    ##  4 2020-07-29 Trousd… Tenn… 47169  1565      6       9573     16348.        62.7
+    ##  5 2020-07-27 Trousd… Tenn… 47169  1561      6       9573     16306.        62.7
+    ##  6 2020-07-24 Trousd… Tenn… 47169  1560      6       9573     16296.        62.7
+    ##  7 2020-07-25 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
+    ##  8 2020-07-26 Trousd… Tenn… 47169  1559      6       9573     16285.        62.7
+    ##  9 2020-07-23 Trousd… Tenn… 47169  1556      6       9573     16254.        62.7
+    ## 10 2020-07-22 Trousd… Tenn… 47169  1548      6       9573     16170.        62.7
 
 ``` r
 ## TASK: Find the top 10 deaths_perk counties; report populations as well
@@ -436,9 +438,9 @@ top10_deaths_perk_counties
     ##  5 2020-07-28 Hancock Geor… 13141   272     34       8535      3187.        398.
     ##  6 2020-07-29 Hancock Geor… 13141   275     34       8535      3222.        398.
     ##  7 2020-07-30 Hancock Geor… 13141   280     34       8535      3281.        398.
-    ##  8 2020-07-08 Hancock Geor… 13141   224     33       8535      2624.        387.
-    ##  9 2020-07-09 Hancock Geor… 13141   225     33       8535      2636.        387.
-    ## 10 2020-07-10 Hancock Geor… 13141   226     33       8535      2648.        387.
+    ##  8 2020-07-31 Hancock Geor… 13141   280     34       8535      3281.        398.
+    ##  9 2020-07-08 Hancock Geor… 13141   224     33       8535      2624.        387.
+    ## 10 2020-07-09 Hancock Geor… 13141   225     33       8535      2636.        387.
 
 ``` r
 df_newyorkcity <-
@@ -452,16 +454,16 @@ df_newyorkcity
     ## # A tibble: 10 x 9
     ##    date       county state fips   cases deaths population cases_perk deaths_perk
     ##    <date>     <chr>  <chr> <chr>  <dbl>  <dbl>      <dbl>      <dbl>       <dbl>
-    ##  1 2020-07-30 New Y… New … <NA>  229551  22996         NA         NA          NA
-    ##  2 2020-07-29 New Y… New … <NA>  229237  22982         NA         NA          NA
-    ##  3 2020-07-28 New Y… New … <NA>  228939  22977         NA         NA          NA
-    ##  4 2020-07-27 New Y… New … <NA>  228740  22970         NA         NA          NA
-    ##  5 2020-07-26 New Y… New … <NA>  228445  22956         NA         NA          NA
-    ##  6 2020-07-25 New Y… New … <NA>  228220  22947         NA         NA          NA
-    ##  7 2020-07-24 New Y… New … <NA>  227882  22936         NA         NA          NA
-    ##  8 2020-07-23 New Y… New … <NA>  227517  22934         NA         NA          NA
-    ##  9 2020-07-22 New Y… New … <NA>  227130  22899         NA         NA          NA
-    ## 10 2020-07-21 New Y… New … <NA>  226779  22895         NA         NA          NA
+    ##  1 2020-07-31 New Y… New … <NA>  229834  23002         NA         NA          NA
+    ##  2 2020-07-30 New Y… New … <NA>  229551  22996         NA         NA          NA
+    ##  3 2020-07-29 New Y… New … <NA>  229237  22982         NA         NA          NA
+    ##  4 2020-07-28 New Y… New … <NA>  228939  22977         NA         NA          NA
+    ##  5 2020-07-27 New Y… New … <NA>  228740  22970         NA         NA          NA
+    ##  6 2020-07-26 New Y… New … <NA>  228445  22956         NA         NA          NA
+    ##  7 2020-07-25 New Y… New … <NA>  228220  22947         NA         NA          NA
+    ##  8 2020-07-24 New Y… New … <NA>  227882  22936         NA         NA          NA
+    ##  9 2020-07-23 New Y… New … <NA>  227517  22934         NA         NA          NA
+    ## 10 2020-07-22 New Y… New … <NA>  227130  22899         NA         NA          NA
 
 **Observations**:
 
@@ -573,8 +575,8 @@ df_normalized_full %>%
     ##   county        max_cases_perk max_deaths_perk
     ##   <chr>                  <dbl>           <dbl>
     ## 1 Hancock                3281.           398. 
-    ## 2 New York City          2719.           272. 
-    ## 3 Trousdale             16369.            62.7
+    ## 2 New York City          2722.           272. 
+    ## 3 Trousdale             16400.            62.7
 
 **Observations**:
 
@@ -623,8 +625,35 @@ df_worse_than_nyc_cases_perk_counties %>%
 <!-- end list -->
 
 ``` r
-## TO DO!
+df_worse_than_nyc_cases_perk_counties %>%
+  summarize("Counties worse than NYC" = n_distinct(location) - 1)
 ```
+
+    ## # A tibble: 1 x 1
+    ##   `Counties worse than NYC`
+    ##                       <dbl>
+    ## 1                       171
+
+``` r
+df_worse_than_nyc_cases_perk_counties %>%
+  arrange(desc(max_cases_perk))
+```
+
+    ## # A tibble: 22,148 x 12
+    ##    date       location county state fips  cases deaths population cases_perk
+    ##    <date>     <chr>    <chr>  <chr> <chr> <dbl>  <dbl>      <dbl>      <dbl>
+    ##  1 2020-03-28 Trousda… Trous… Tenn… 47169     1      0       9573       10.4
+    ##  2 2020-03-29 Trousda… Trous… Tenn… 47169     1      0       9573       10.4
+    ##  3 2020-03-30 Trousda… Trous… Tenn… 47169     3      0       9573       31.3
+    ##  4 2020-03-31 Trousda… Trous… Tenn… 47169     3      0       9573       31.3
+    ##  5 2020-04-01 Trousda… Trous… Tenn… 47169     5      1       9573       52.2
+    ##  6 2020-04-02 Trousda… Trous… Tenn… 47169     6      1       9573       62.7
+    ##  7 2020-04-03 Trousda… Trous… Tenn… 47169     7      1       9573       73.1
+    ##  8 2020-04-04 Trousda… Trous… Tenn… 47169     7      1       9573       73.1
+    ##  9 2020-04-05 Trousda… Trous… Tenn… 47169     8      1       9573       83.6
+    ## 10 2020-04-06 Trousda… Trous… Tenn… 47169    11      1       9573      115. 
+    ## # … with 22,138 more rows, and 3 more variables: deaths_perk <dbl>,
+    ## #   max_cases_perk <dbl>, max_deaths_perk <dbl>
 
 Next, I’ll examine which counties have experienced more deaths per
 100,000 than New York City.
@@ -677,11 +706,30 @@ df_angela_counties <-
     county == "King" & state == "Washington" | 
     county == "Wake" & state == "North Carolina" |
     county == "Durham" & state == "North Carolina" |
-    county == "St. Tammany" & state == "Louisiana" #|
+    county == "St. Tammany" & state == "Louisiana" |
+    county == "Orleans" & state == "Louisiana" #|
 #    county == "Franklin" & state == "Alabama" |
 #    county == "Jefferson" & state == "Alabama"
   ) 
+
+df_angela_counties 
 ```
+
+    ## # A tibble: 729 x 12
+    ##    date       location county state fips  cases deaths population cases_perk
+    ##    <date>     <chr>    <chr>  <chr> <chr> <dbl>  <dbl>      <dbl>      <dbl>
+    ##  1 2020-02-28 King, W… King   Wash… 53033     1      0    2163257     0.0462
+    ##  2 2020-02-29 King, W… King   Wash… 53033     4      1    2163257     0.185 
+    ##  3 2020-03-01 King, W… King   Wash… 53033    11      3    2163257     0.508 
+    ##  4 2020-03-02 King, W… King   Wash… 53033    15      6    2163257     0.693 
+    ##  5 2020-03-03 Wake, N… Wake   Nort… 37183     1      0    1046558     0.0956
+    ##  6 2020-03-03 King, W… King   Wash… 53033    22     10    2163257     1.02  
+    ##  7 2020-03-04 Wake, N… Wake   Nort… 37183     1      0    1046558     0.0956
+    ##  8 2020-03-04 King, W… King   Wash… 53033    33     11    2163257     1.53  
+    ##  9 2020-03-05 Wake, N… Wake   Nort… 37183     1      0    1046558     0.0956
+    ## 10 2020-03-05 King, W… King   Wash… 53033    52     11    2163257     2.40  
+    ## # … with 719 more rows, and 3 more variables: deaths_perk <dbl>,
+    ## #   max_cases_perk <dbl>, max_deaths_perk <dbl>
 
 Now I’d like to compare the cases per 100,000 people in these counties.
 
@@ -797,13 +845,245 @@ df_zeta_counties %>%
   scale_color_discrete(name = "County") +
   theme_minimal() +
   labs(
-    title = "Cases per 100,000 persons in several US counties",
+    title = "Deaths per 100,000 persons in several US counties",
     x = "Date",
     y = "Deaths per 100,000 persons"
   )
 ```
 
 ![](c06-covid19-assignment_files/figure-gfm/team%20zeta%20counties%20deathsperk-1.png)<!-- -->
+
+### Team Zeta’s Tales of Two Counties
+
+*Please see our presentation for all the observations. We’ve been
+sharing code to generate these graphs, and this isn’t really meant to be
+part of my individual submission.*
+
+``` r
+#So that everyone can run this code snippet
+df_q8 <- df_normalized_full 
+
+#Counties of interest
+final_counties <- c(27053, 27019, 37183, 37063, 22071, 22103)
+
+#Running Total and Ratio calculations
+df_final_counties <- df_q8 %>% 
+  filter(fips == final_counties) %>%
+  group_by(fips) %>% 
+  mutate(deathratio_perk = deaths_perk/cases_perk) %>%
+  ungroup() %>%
+  group_by(state) %>%
+  mutate(state_max_cases_perk = max(cases_perk))
+```
+
+Now, we visualize\!
+
+``` r
+# Cases 
+df_final_counties %>% 
+  ggplot(
+    aes(date, cases_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 cases per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/Tales%20of%20Two%20Counties%20-%20cases%20per100k%20graphs-1.png)<!-- -->
+
+``` r
+# Cases with stay at home orders noted
+df_final_counties %>% 
+  ggplot(
+    aes(date, cases_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+
+  geom_vline(xintercept = as.Date('2020-03-23'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-30'), linetype = "dotted", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-27'), linetype = "dashed", color = "gray25") +
+  annotate(
+    "text", 
+    x = as.Date('2020-03-19'), 
+    angle = 90,
+    y = 1500, 
+    label = "Stay at Home orders issued (per state)",
+    color = "gray25"
+  ) +
+
+  theme_minimal() +
+  labs(
+    title = "COVID-19 cases per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/team%20zeta%20cases%20with%20stay%20home%20orders%20noted-1.png)<!-- -->
+
+``` r
+# Cases with holidays noted  
+df_final_counties %>% 
+  ggplot(
+    aes(date, cases_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  
+  geom_vline(xintercept = as.Date('2020-02-25'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-10'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-02-25'), xmax = as.Date('2020-03-10'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-02-21'), 
+    angle = 90,
+    y = 2500, 
+    label = "Mardi Gras",
+    color = "gray25"
+  ) +
+  
+  geom_vline(xintercept = as.Date('2020-04-12'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-04-26'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-04-12'), xmax = as.Date('2020-04-26'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-04-08'), 
+    angle = 90,
+    y = 2500, 
+    label = "Easter Sunday",
+    color = "gray25"
+  ) +
+  geom_vline(xintercept = as.Date('2020-05-25'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-06-08'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-05-25'), xmax = as.Date('2020-06-08'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-05-21'), 
+    angle = 90,
+    y = 2500, 
+    label = "Memorial Day",
+    color = "gray25"
+  ) +
+  geom_vline(xintercept = as.Date('2020-07-04'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-07-18'), linetype = "dashed", color = "gray25") +
+  annotate("rect", xmin = as.Date('2020-07-04'), xmax = as.Date('2020-07-18'), ymin = 0, ymax = 3000,
+  alpha = .2) +
+  annotate(
+    "text", 
+    x = as.Date('2020-06-30'), 
+    angle = 90,
+    y = 2500, 
+    label = "4th of July",
+    color = "gray25"
+  ) +
+    
+  theme_minimal() +
+  labs(
+    title = "COVID-19 cases per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Cases per 100,000 persons"
+  )  
+```
+
+![](c06-covid19-assignment_files/figure-gfm/Team%20Zeta%20cases%20with%20holidays-1.png)<!-- -->
+
+``` r
+# Deaths
+df_final_counties %>% 
+  ggplot(
+    aes(date, deaths_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 deaths per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Deaths per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/Tales%20of%20Two%20Counties%20deaths%20per100k%20plots-1.png)<!-- -->
+
+``` r
+df_final_counties %>% 
+  ggplot(
+    aes(date, deaths_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+
+  geom_vline(xintercept = as.Date('2020-03-23'), linetype = "solid", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-30'), linetype = "dotted", color = "gray25") +
+  geom_vline(xintercept = as.Date('2020-03-27'), linetype = "dashed", color = "gray25") +
+  annotate(
+    "text", 
+    x = as.Date('2020-03-19'), 
+    angle = 90,
+    y = 75, 
+    label = "Stay at Home orders issued (per state)",
+    color = "gray25"
+  ) +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 deaths per 100,000 persons in select US counties",
+    x = "Date",
+    y = "Deaths per 100,000 persons"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/deaths%20with%20stay%20home%20orders-1.png)<!-- -->
+
+``` r
+# Death Ratio
+df_final_counties %>%
+  ggplot(
+    aes(date, deathratio_perk, 
+      color = fct_reorder2(location, state, state_max_cases_perk), 
+      linetype = fct_reorder(state, desc(state_max_cases_perk))
+    )
+  ) +
+  geom_line() +
+  scale_color_discrete(name = "County") +
+  scale_linetype_discrete(name = "State") +
+  theme_minimal() +
+  labs(
+    title = "COVID-19 deaths per cases in select US counties",
+    x = "Date",
+    y = "Deaths per cases of COVID-19"
+  )
+```
+
+![](c06-covid19-assignment_files/figure-gfm/zeta%20tales%20death%20ratio-1.png)<!-- -->
 
 # Notes
 
@@ -903,7 +1183,7 @@ df_normalized %>%
   )
 ```
 
-    ## Warning: Removed 137 row(s) containing missing values (geom_path).
+    ## Warning: Removed 138 row(s) containing missing values (geom_path).
 
 ![](c06-covid19-assignment_files/figure-gfm/ma-example-1.png)<!-- -->
 
@@ -973,7 +1253,7 @@ df_nyc <-
 df_nyc
 ```
 
-    ## # A tibble: 152 x 8
+    ## # A tibble: 153 x 8
     ##    date       county  state cases cases_per100k deaths deaths_per100k population
     ##    <date>     <chr>   <chr> <dbl>         <dbl>  <dbl>          <dbl>      <dbl>
     ##  1 2020-03-01 New Yo… New …     1        0.0118      0              0    8443713
@@ -986,7 +1266,7 @@ df_nyc
     ##  8 2020-03-08 New Yo… New …    14        0.166       0              0    8443713
     ##  9 2020-03-09 New Yo… New …    20        0.237       0              0    8443713
     ## 10 2020-03-10 New Yo… New …    37        0.438       0              0    8443713
-    ## # … with 142 more rows
+    ## # … with 143 more rows
 
 ``` r
 df_pop %>%
