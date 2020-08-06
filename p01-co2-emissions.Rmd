@@ -1,0 +1,170 @@
+---
+title: "Team Zeta Project 1"
+author: "Angela Sharer"
+date: 2020-08-03
+output:
+  github_document:
+    toc: true
+---
+
+# Food Consumption and CO2 Emissions
+Team Zeta Project 1
+
+```{r setup}
+library(tidyverse)
+
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+
+gapminder_pop_total <- read_csv("./data/population_total.csv")
+
+gapminder_geo <- read_csv("./data/countries_gapminder.csv")
+
+```
+
+
+```{r examining data sets}
+food_consumption
+
+gapminder_pop_total
+
+gapminder_geo
+```
+
+```{r gapminder wrangling}
+gapminder_pop_2014 <-
+  gapminder_pop_total %>%
+  select("country", "population" = "2014")
+
+gapminder_pop_2014
+
+gapminder_geo_select <-
+  gapminder_geo %>%
+  select(
+    "country" = "name", 
+    "region" = "World bank region", 
+    "income_grp" = "World bank, 4 income groups 2017"
+  )
+
+gapminder_geo_select
+```
+
+```{r food_consumption wrangling - fixing countries}
+## First, I'm fixing the USA
+food_consumption_US_only <-
+  food_consumption %>%
+  filter(country == "USA") %>%
+  select(-country) %>%
+  mutate(country = "United States") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Next, I'm fixing Hong Kong
+food_consumption_HK_only <-
+  food_consumption %>%
+  filter(country == "Hong Kong SAR. China") %>%
+  select(-country) %>%
+  mutate(country = "Hong Kong, China") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Next, I'm fixing Taiwan
+food_consumption_TW_only <-
+  food_consumption %>%
+  filter(country == "Taiwan. ROC") %>%
+  select(-country) %>%
+  mutate(country = "Taiwan") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Macedonia (Macedonia, FYR in gapminder)
+food_consumption_Macedonia_only <-
+  food_consumption %>%
+  filter(country == "Macedonia") %>%
+  select(-country) %>%
+  mutate(country = "Macedonia, FYR") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Congo, Rep.
+food_consumption_CongoRep_only <-
+  food_consumption %>%
+  filter(country == "Congo") %>%
+  select(-country) %>%
+  mutate(country = "Congo, Rep.") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+
+## Now, I'm binding them all together!
+food_consumption_mod <-
+  food_consumption %>%
+  filter(
+    country != "USA" &
+    country != "Hong Kong SAR. China" &
+    country != "Taiwan. ROC" &
+    country != "Macedonia" &
+    country != "Congo"
+  ) %>%
+  bind_rows(
+    food_consumption_US_only,
+    food_consumption_HK_only,
+    food_consumption_TW_only,
+    food_consumption_Macedonia_only,
+    food_consumption_CongoRep_only
+    )
+
+
+
+
+```
+
+```{r food_consumption wrangling - joining with gapminder}
+
+df_food_pop <-
+  food_consumption_mod %>%
+  left_join(gapminder_pop_2014, by = "country") %>%
+  left_join(gapminder_geo_select, by = "country") %>%
+  group_by(country) %>%
+  mutate(
+    co2_food_country = sum(co2_emmission), 
+    food_consumption_country = sum(consumption)
+  ) %>%
+  ungroup()
+
+df_food_pop
+
+#View(df_food_pop[is.na(df_food_pop$region),])
+## My gapminder joining didn't catch everything. Countries missing data include:
+## Bermuda, French Polynesia, New Caledonia, Slovakia: Gapminder doesn't have these
+
+
+
+```
+
+
+
+```{r scatterplot of consumption and co2 by country}
+df_food_pop %>%
+  ggplot() +
+  geom_point(aes(co2_food_country, food_consumption_country, color = region)) +
+  scale_color_discrete(name = "Region") +
+  labs(
+    title = "Food consumption and CO2 emissions per capita",
+    x = "CO2 emissions per capita (kg CO2/person/year)",
+    y = "Food consumption per capita (kg/person/year)"
+  )
+```
+
+
+```{r}
+df_food_pop %>%
+  ggplot() +
+  geom_point(aes(co2_food_country, food_consumption_country, color = income_grp)) +
+  scale_color_discrete(name = "Income level") +
+  labs(
+    title = "Food consumption and CO2 emissions per capita",
+    x = "CO2 emissions per capita (kg CO2/person/year)",
+    y = "Food consumption per capita (kg/person/year)"
+  )
+```
+
+
+# Sources
+
+[Food consumption data, tidy format](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-18/readme.md)
+[Food consumption data, original source](https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018)
