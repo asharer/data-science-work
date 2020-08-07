@@ -21,6 +21,8 @@ gapminder_pop_total <- read_csv("./data/population_total.csv")
 
 gapminder_geo <- read_csv("./data/countries_gapminder.csv")
 
+gapminder_emissions <- read_csv("./data/co2_emissions_tonnes_per_person.csv")
+
 ```
 
 
@@ -30,6 +32,8 @@ food_consumption
 gapminder_pop_total
 
 gapminder_geo
+
+gapminder_emissions
 ```
 
 ## Data Wrangling
@@ -50,6 +54,15 @@ gapminder_geo_select <-
   )
 
 gapminder_geo_select
+
+gapminder_emissions_2014 <-
+  gapminder_emissions %>%
+  select("country", "total_co2_tonnes" = "2014") %>%
+  mutate(total_co2_emissions = total_co2_tonnes * 1000) %>%
+  select("country", "total_co2_emissions")
+
+gapminder_emissions_2014
+
 ```
 
 ```{r food_consumption wrangling - fixing countries}
@@ -118,12 +131,25 @@ df_food_pop <-
   food_consumption_mod %>%
   left_join(gapminder_pop_2014, by = "country") %>%
   left_join(gapminder_geo_select, by = "country") %>%
+  left_join(gapminder_emissions_2014, by = "country") %>%
   group_by(country) %>%
   mutate(
     co2_food_country = sum(co2_emmission), 
     food_consumption_country = sum(consumption)
   ) %>%
-  ungroup()
+  ungroup() %>%
+  select(
+    region,
+    country,
+    population,
+    income_grp,
+    food_category,
+    consumption,
+    food_consumption_country,
+    "co2_emission_food" = co2_emmission,
+    co2_food_country,
+    total_co2_emissions
+  )
 
 df_food_pop
 
@@ -198,6 +224,94 @@ df_food_pop %>%
   )
 ```
 
+```{r food emissions vs. total emissions}
+df_food_pop %>%
+  ggplot() +
+  geom_point(aes(co2_food_country, total_co2_emissions, color = region), na.rm = TRUE) +
+  scale_color_discrete(name = "Region") +
+  #coord_trans(x = "log", y = "log") +
+  labs(
+    title = "CO2 emissions per capita from food vs. overall",
+    x = "CO2 emissions from food per capita (kg CO2/person/year)",
+    y = "Total CO2 emissions per capita (kg CO2/person/year)"
+  )
+
+```
+
+```{r rice vs. wheat}
+
+df_rice_wheat <-
+  df_food_pop %>%
+  filter(
+    food_category == "Wheat and Wheat Products" | 
+    food_category == "Rice"
+  ) %>%
+  select(-co2_emission_food) %>%
+  pivot_wider(
+    names_from = food_category,
+    values_from = consumption
+  ) %>%
+  select(
+    region,
+    country,
+    income_grp,
+    food_consumption_country,
+    "wheat" = "Wheat and Wheat Products",
+    "rice" = "Rice"
+  )
+
+df_rice_wheat %>%
+  ggplot() +
+  geom_point(
+    aes(
+      wheat, 
+      rice, 
+      color = fct_reorder(income_grp, desc(food_consumption_country))
+    )
+  ) +
+  scale_color_discrete(name = "Income level") +
+  labs(
+    title = "Wheat and Rice consumption per capita",
+    x = "Wheat and wheat product consumption per capita",
+    y = "Rice consumption per capita"
+  )
+
+```
+
+```{r dairy; Finland}
+
+df_food_pop %>%
+  filter(food_category == "Milk - inc. cheese") %>%
+  arrange(desc(consumption))
+
+df_food_pop %>%
+  filter(country == "Finland") %>%
+  ggplot() +
+  geom_col(aes(fct_reorder(food_category, desc(consumption)), consumption)) +
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  labs(
+    title = "Finland's food consumption per capita, select categories",
+    x = "Food category",
+    y = "Consumption per person per year"
+  )
+
+```
+
+This almost seems like a mistake. I have asked my friend in Finland whether Finns consume a lot of milk and/or cheese, and will report back when she responds.
+
+The internet claims Finns drink a lot of milk. Interesting.
+
+
+
+
+*Other ideas for graphs:*
+
+- Milk vs. GDP
+- Rice vs. GDP
+- Worst emitters breakdown
+- Lowest emitters breakdown
 
 
 

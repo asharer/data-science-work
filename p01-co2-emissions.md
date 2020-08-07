@@ -75,6 +75,17 @@ gapminder_geo <- read_csv("./data/countries_gapminder.csv")
     ## )
 
 ``` r
+gapminder_emissions <- read_csv("./data/co2_emissions_tonnes_per_person.csv")
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   country = col_character()
+    ## )
+    ## See spec(...) for full column specifications.
+
+``` r
 food_consumption
 ```
 
@@ -153,6 +164,45 @@ gapminder_geo
     ## #   since` <chr>, `World bank region` <chr>, `World bank, 4 income groups
     ## #   2017` <chr>
 
+``` r
+gapminder_emissions
+```
+
+    ## # A tibble: 192 x 216
+    ##    country `1800` `1801` `1802` `1803` `1804` `1805` `1806` `1807` `1808` `1809`
+    ##    <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
+    ##  1 Afghan…     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  2 Albania     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  3 Algeria     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  4 Andorra     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  5 Angola      NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  6 Antigu…     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  7 Argent…     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  8 Armenia     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ##  9 Austra…     NA     NA     NA     NA     NA     NA     NA NA         NA     NA
+    ## 10 Austria     NA     NA     NA     NA     NA     NA     NA  0.054     NA     NA
+    ## # … with 182 more rows, and 205 more variables: `1810` <dbl>, `1811` <dbl>,
+    ## #   `1812` <dbl>, `1813` <dbl>, `1814` <dbl>, `1815` <dbl>, `1816` <dbl>,
+    ## #   `1817` <dbl>, `1818` <dbl>, `1819` <dbl>, `1820` <dbl>, `1821` <dbl>,
+    ## #   `1822` <dbl>, `1823` <dbl>, `1824` <dbl>, `1825` <dbl>, `1826` <dbl>,
+    ## #   `1827` <dbl>, `1828` <dbl>, `1829` <dbl>, `1830` <dbl>, `1831` <dbl>,
+    ## #   `1832` <dbl>, `1833` <dbl>, `1834` <dbl>, `1835` <dbl>, `1836` <dbl>,
+    ## #   `1837` <dbl>, `1838` <dbl>, `1839` <dbl>, `1840` <dbl>, `1841` <dbl>,
+    ## #   `1842` <dbl>, `1843` <dbl>, `1844` <dbl>, `1845` <dbl>, `1846` <dbl>,
+    ## #   `1847` <dbl>, `1848` <dbl>, `1849` <dbl>, `1850` <dbl>, `1851` <dbl>,
+    ## #   `1852` <dbl>, `1853` <dbl>, `1854` <dbl>, `1855` <dbl>, `1856` <dbl>,
+    ## #   `1857` <dbl>, `1858` <dbl>, `1859` <dbl>, `1860` <dbl>, `1861` <dbl>,
+    ## #   `1862` <dbl>, `1863` <dbl>, `1864` <dbl>, `1865` <dbl>, `1866` <dbl>,
+    ## #   `1867` <dbl>, `1868` <dbl>, `1869` <dbl>, `1870` <dbl>, `1871` <dbl>,
+    ## #   `1872` <dbl>, `1873` <dbl>, `1874` <dbl>, `1875` <dbl>, `1876` <dbl>,
+    ## #   `1877` <dbl>, `1878` <dbl>, `1879` <dbl>, `1880` <dbl>, `1881` <dbl>,
+    ## #   `1882` <dbl>, `1883` <dbl>, `1884` <dbl>, `1885` <dbl>, `1886` <dbl>,
+    ## #   `1887` <dbl>, `1888` <dbl>, `1889` <dbl>, `1890` <dbl>, `1891` <dbl>,
+    ## #   `1892` <dbl>, `1893` <dbl>, `1894` <dbl>, `1895` <dbl>, `1896` <dbl>,
+    ## #   `1897` <dbl>, `1898` <dbl>, `1899` <dbl>, `1900` <dbl>, `1901` <dbl>,
+    ## #   `1902` <dbl>, `1903` <dbl>, `1904` <dbl>, `1905` <dbl>, `1906` <dbl>,
+    ## #   `1907` <dbl>, `1908` <dbl>, `1909` <dbl>, …
+
 ## Data Wrangling
 
 ``` r
@@ -204,6 +254,31 @@ gapminder_geo_select
     ##  9 Australia           East Asia & Pacific        High income        
     ## 10 Austria             Europe & Central Asia      High income        
     ## # … with 187 more rows
+
+``` r
+gapminder_emissions_2014 <-
+  gapminder_emissions %>%
+  select("country", "total_co2_tonnes" = "2014") %>%
+  mutate(total_co2_emissions = total_co2_tonnes * 1000) %>%
+  select("country", "total_co2_emissions")
+
+gapminder_emissions_2014
+```
+
+    ## # A tibble: 192 x 2
+    ##    country             total_co2_emissions
+    ##    <chr>                             <dbl>
+    ##  1 Afghanistan                         294
+    ##  2 Albania                            1970
+    ##  3 Algeria                            3740
+    ##  4 Andorra                            5830
+    ##  5 Angola                             1290
+    ##  6 Antigua and Barbuda                5740
+    ##  7 Argentina                          4790
+    ##  8 Armenia                            1900
+    ##  9 Australia                         15300
+    ## 10 Austria                            6810
+    ## # … with 182 more rows
 
 ``` r
 ## First, I'm fixing the USA
@@ -271,31 +346,44 @@ df_food_pop <-
   food_consumption_mod %>%
   left_join(gapminder_pop_2014, by = "country") %>%
   left_join(gapminder_geo_select, by = "country") %>%
+  left_join(gapminder_emissions_2014, by = "country") %>%
   group_by(country) %>%
   mutate(
     co2_food_country = sum(co2_emmission), 
     food_consumption_country = sum(consumption)
   ) %>%
-  ungroup()
+  ungroup() %>%
+  select(
+    region,
+    country,
+    population,
+    income_grp,
+    food_category,
+    consumption,
+    food_consumption_country,
+    "co2_emission_food" = co2_emmission,
+    co2_food_country,
+    total_co2_emissions
+  )
 
 df_food_pop
 ```
 
-    ## # A tibble: 1,430 x 9
-    ##    country food_category consumption co2_emmission population region income_grp
-    ##    <chr>   <chr>               <dbl>         <dbl>      <dbl> <chr>  <chr>     
-    ##  1 Argent… Pork                10.5          37.2    42600000 Latin… Upper mid…
-    ##  2 Argent… Poultry             38.7          41.5    42600000 Latin… Upper mid…
-    ##  3 Argent… Beef                55.5        1712      42600000 Latin… Upper mid…
-    ##  4 Argent… Lamb & Goat          1.56         54.6    42600000 Latin… Upper mid…
-    ##  5 Argent… Fish                 4.36          6.96   42600000 Latin… Upper mid…
-    ##  6 Argent… Eggs                11.4          10.5    42600000 Latin… Upper mid…
-    ##  7 Argent… Milk - inc. …      195.          278.     42600000 Latin… Upper mid…
-    ##  8 Argent… Wheat and Wh…      103.           19.7    42600000 Latin… Upper mid…
-    ##  9 Argent… Rice                 8.77         11.2    42600000 Latin… Upper mid…
-    ## 10 Argent… Soybeans             0             0      42600000 Latin… Upper mid…
-    ## # … with 1,420 more rows, and 2 more variables: co2_food_country <dbl>,
-    ## #   food_consumption_country <dbl>
+    ## # A tibble: 1,430 x 10
+    ##    region country population income_grp food_category consumption
+    ##    <chr>  <chr>        <dbl> <chr>      <chr>               <dbl>
+    ##  1 Latin… Argent…   42600000 Upper mid… Pork                10.5 
+    ##  2 Latin… Argent…   42600000 Upper mid… Poultry             38.7 
+    ##  3 Latin… Argent…   42600000 Upper mid… Beef                55.5 
+    ##  4 Latin… Argent…   42600000 Upper mid… Lamb & Goat          1.56
+    ##  5 Latin… Argent…   42600000 Upper mid… Fish                 4.36
+    ##  6 Latin… Argent…   42600000 Upper mid… Eggs                11.4 
+    ##  7 Latin… Argent…   42600000 Upper mid… Milk - inc. …      195.  
+    ##  8 Latin… Argent…   42600000 Upper mid… Wheat and Wh…      103.  
+    ##  9 Latin… Argent…   42600000 Upper mid… Rice                 8.77
+    ## 10 Latin… Argent…   42600000 Upper mid… Soybeans             0   
+    ## # … with 1,420 more rows, and 4 more variables: food_consumption_country <dbl>,
+    ## #   co2_emission_food <dbl>, co2_food_country <dbl>, total_co2_emissions <dbl>
 
 ``` r
 #View(df_food_pop[is.na(df_food_pop$region),])
@@ -375,6 +463,113 @@ df_food_pop %>%
 ```
 
 ![](p01-co2-emissions_files/figure-gfm/facetted%20boxplot%20of%20consumption%20by%20food%20category%20and%20income%20group-1.png)<!-- -->
+
+``` r
+df_food_pop %>%
+  ggplot() +
+  geom_point(aes(co2_food_country, total_co2_emissions, color = region), na.rm = TRUE) +
+  scale_color_discrete(name = "Region") +
+  #coord_trans(x = "log", y = "log") +
+  labs(
+    title = "CO2 emissions per capita from food vs. overall",
+    x = "CO2 emissions from food per capita (kg CO2/person/year)",
+    y = "Total CO2 emissions per capita (kg CO2/person/year)"
+  )
+```
+
+![](p01-co2-emissions_files/figure-gfm/food%20emissions%20vs.%20total%20emissions-1.png)<!-- -->
+
+``` r
+df_rice_wheat <-
+  df_food_pop %>%
+  filter(
+    food_category == "Wheat and Wheat Products" | 
+    food_category == "Rice"
+  ) %>%
+  select(-co2_emission_food) %>%
+  pivot_wider(
+    names_from = food_category,
+    values_from = consumption
+  ) %>%
+  select(
+    region,
+    country,
+    income_grp,
+    food_consumption_country,
+    "wheat" = "Wheat and Wheat Products",
+    "rice" = "Rice"
+  )
+
+df_rice_wheat %>%
+  ggplot() +
+  geom_point(
+    aes(
+      wheat, 
+      rice, 
+      color = fct_reorder(income_grp, desc(food_consumption_country))
+    )
+  ) +
+  scale_color_discrete(name = "Income level") +
+  labs(
+    title = "Wheat and Rice consumption per capita",
+    x = "Wheat and wheat product consumption per capita",
+    y = "Rice consumption per capita"
+  )
+```
+
+![](p01-co2-emissions_files/figure-gfm/rice%20vs.%20wheat-1.png)<!-- -->
+
+``` r
+df_food_pop %>%
+  filter(food_category == "Milk - inc. cheese") %>%
+  arrange(desc(consumption))
+```
+
+    ## # A tibble: 130 x 10
+    ##    region country population income_grp food_category consumption
+    ##    <chr>  <chr>        <dbl> <chr>      <chr>               <dbl>
+    ##  1 Europ… Finland    5460000 High inco… Milk - inc. …        431.
+    ##  2 Europ… Nether…   16900000 High inco… Milk - inc. …        341.
+    ##  3 Europ… Sweden     9690000 High inco… Milk - inc. …        341.
+    ##  4 Europ… Switze…    8210000 High inco… Milk - inc. …        319.
+    ##  5 Europ… Albania    2900000 Upper mid… Milk - inc. …        304.
+    ##  6 Europ… Lithua…    2970000 High inco… Milk - inc. …        295.
+    ##  7 Europ… Ireland    4630000 High inco… Milk - inc. …        292.
+    ##  8 Europ… Kazakh…   17300000 Upper mid… Milk - inc. …        288.
+    ##  9 Europ… Estonia    1320000 High inco… Milk - inc. …        285.
+    ## 10 Europ… Denmark    5660000 High inco… Milk - inc. …        277.
+    ## # … with 120 more rows, and 4 more variables: food_consumption_country <dbl>,
+    ## #   co2_emission_food <dbl>, co2_food_country <dbl>, total_co2_emissions <dbl>
+
+``` r
+df_food_pop %>%
+  filter(country == "Finland") %>%
+  ggplot() +
+  geom_col(aes(fct_reorder(food_category, desc(consumption)), consumption)) +
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  labs(
+    title = "Finland's food consumption per capita, select categories",
+    x = "Food category",
+    y = "Consumption per person per year"
+  )
+```
+
+![](p01-co2-emissions_files/figure-gfm/dairy;%20Finland-1.png)<!-- -->
+
+This almost seems like a mistake. I have asked my friend in Finland
+whether Finns consume a lot of milk and/or cheese, and will report back
+when she responds.
+
+The internet claims Finns drink a lot of milk. Interesting.
+
+*Other ideas for graphs:*
+
+  - Milk vs. GDP
+  - Rice vs. GDP
+  - Worst emitters breakdown
+  - Lowest emitters breakdown
 
 # Sources
 
