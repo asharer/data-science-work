@@ -160,6 +160,48 @@ df_food_pop %>%
 ```
 
 
+```{r boxplot of consumption by food category}
+df_food_pop %>%
+  ggplot() +
+  geom_boxplot(aes(consumption, fct_reorder(food_category, consumption))) +
+  labs(
+    title = "Consumption per capita by food category",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+```{r facetted boxplot of consumption by food category and region}
+df_food_pop %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_boxplot(aes(consumption, fct_reorder(food_category, consumption))) +
+  facet_wrap(~ fct_reorder(region, desc(consumption)), ncol = 4) +
+  labs(
+    title = "Consumption per capita by food category and region",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+
+
+
+```{r facetted boxplot of consumption by food category and income group}
+df_food_pop %>%
+  filter(!is.na(income_grp)) %>%
+  ggplot() +
+  geom_boxplot(aes(consumption, fct_reorder(food_category, consumption))) +
+  facet_wrap(~ fct_reorder(income_grp, desc(consumption)), ncol = 4) +
+  labs(
+    title = "Consumption per capita by food category and income group",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+
+
+
+
+
 # Sources
 
 We downloaded the data on food consumption and CO2 emissions from Tidy Tuesday on Github, but that data came from another source, who originally got it from the Food and Agriculture Organization of the United Nations.

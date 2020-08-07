@@ -333,6 +333,49 @@ df_food_pop %>%
 
 ![](p01-co2-emissions_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20income%20group-1.png)<!-- -->
 
+``` r
+df_food_pop %>%
+  ggplot() +
+  geom_boxplot(aes(consumption, fct_reorder(food_category, consumption))) +
+  labs(
+    title = "Consumption per capita by food category",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+
+![](p01-co2-emissions_files/figure-gfm/boxplot%20of%20consumption%20by%20food%20category-1.png)<!-- -->
+
+``` r
+df_food_pop %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_boxplot(aes(consumption, fct_reorder(food_category, consumption))) +
+  facet_wrap(~ fct_reorder(region, desc(consumption)), ncol = 4) +
+  labs(
+    title = "Consumption per capita by food category and region",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+
+![](p01-co2-emissions_files/figure-gfm/facetted%20boxplot%20of%20consumption%20by%20food%20category%20and%20region-1.png)<!-- -->
+
+``` r
+df_food_pop %>%
+  filter(!is.na(income_grp)) %>%
+  ggplot() +
+  geom_boxplot(aes(consumption, fct_reorder(food_category, consumption))) +
+  facet_wrap(~ fct_reorder(income_grp, desc(consumption)), ncol = 4) +
+  labs(
+    title = "Consumption per capita by food category and income group",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+
+![](p01-co2-emissions_files/figure-gfm/facetted%20boxplot%20of%20consumption%20by%20food%20category%20and%20income%20group-1.png)<!-- -->
+
 # Sources
 
 We downloaded the data on food consumption and CO2 emissions from Tidy
