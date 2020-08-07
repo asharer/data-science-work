@@ -10,6 +10,8 @@ output:
 # Food Consumption and CO2 Emissions
 Team Zeta Project 1
 
+## Setup
+
 ```{r setup}
 library(tidyverse)
 
@@ -29,6 +31,8 @@ gapminder_pop_total
 
 gapminder_geo
 ```
+
+## Data Wrangling
 
 ```{r gapminder wrangling}
 gapminder_pop_2014 <-
@@ -107,14 +111,9 @@ food_consumption_mod <-
     food_consumption_Macedonia_only,
     food_consumption_CongoRep_only
     )
-
-
-
-
 ```
 
 ```{r food_consumption wrangling - joining with gapminder}
-
 df_food_pop <-
   food_consumption_mod %>%
   left_join(gapminder_pop_2014, by = "country") %>%
@@ -129,16 +128,13 @@ df_food_pop <-
 df_food_pop
 
 #View(df_food_pop[is.na(df_food_pop$region),])
-## My gapminder joining didn't catch everything. Countries missing data include:
-## Bermuda, French Polynesia, New Caledonia, Slovakia: Gapminder doesn't have these
-
-
-
+## Gapminder is missing these countries, which are present in food_consumption:
+## Bermuda, French Polynesia, New Caledonia, Slovakia
 ```
 
+## EDA
 
-
-```{r scatterplot of consumption and co2 by country}
+```{r scatterplot of consumption and co2 by country and region}
 df_food_pop %>%
   ggplot() +
   geom_point(aes(co2_food_country, food_consumption_country, color = region)) +
@@ -151,7 +147,7 @@ df_food_pop %>%
 ```
 
 
-```{r}
+```{r scatterplot of consumption and co2 by country and income group}
 df_food_pop %>%
   ggplot() +
   geom_point(aes(co2_food_country, food_consumption_country, color = income_grp)) +
@@ -166,5 +162,12 @@ df_food_pop %>%
 
 # Sources
 
-[Food consumption data, tidy format](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-18/readme.md)
-[Food consumption data, original source](https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018)
+We downloaded the data on food consumption and CO2 emissions from Tidy Tuesday on Github, but that data came from another source, who originally got it from the Food and Agriculture Organization of the United Nations.
+
+- [Food consumption data, tidy format](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-18/readme.md)
+- [Food consumption data, source](https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018)
+- [Food consumption data, original source](http://www.fao.org/faostat/en/#data)
+
+We merged in some additional data on population, income, etc. from Gapminder.
+
+- [Gapminder](https://www.gapminder.org/data/)

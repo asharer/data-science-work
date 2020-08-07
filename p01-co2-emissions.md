@@ -5,11 +5,16 @@ Angela Sharer
 
   - [Food Consumption and CO2
     Emissions](#food-consumption-and-co2-emissions)
+      - [Setup](#setup)
+      - [Data Wrangling](#data-wrangling)
+      - [EDA](#eda)
   - [Sources](#sources)
 
 # Food Consumption and CO2 Emissions
 
 Team Zeta Project 1
+
+## Setup
 
 ``` r
 library(tidyverse)
@@ -147,6 +152,8 @@ gapminder_geo
     ## # … with 187 more rows, and 4 more variables: Longitude <dbl>, `UN member
     ## #   since` <chr>, `World bank region` <chr>, `World bank, 4 income groups
     ## #   2017` <chr>
+
+## Data Wrangling
 
 ``` r
 gapminder_pop_2014 <-
@@ -292,9 +299,11 @@ df_food_pop
 
 ``` r
 #View(df_food_pop[is.na(df_food_pop$region),])
-## My gapminder joining didn't catch everything. Countries missing data include:
-## Bermuda, French Polynesia, New Caledonia, Slovakia: Gapminder doesn't have these
+## Gapminder is missing these countries, which are present in food_consumption:
+## Bermuda, French Polynesia, New Caledonia, Slovakia
 ```
+
+## EDA
 
 ``` r
 df_food_pop %>%
@@ -308,7 +317,7 @@ df_food_pop %>%
   )
 ```
 
-![](p01-co2-emissions_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country-1.png)<!-- -->
+![](p01-co2-emissions_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20region-1.png)<!-- -->
 
 ``` r
 df_food_pop %>%
@@ -322,11 +331,23 @@ df_food_pop %>%
   )
 ```
 
-![](p01-co2-emissions_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](p01-co2-emissions_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20income%20group-1.png)<!-- -->
 
 # Sources
 
-[Food consumption data, tidy
-format](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-18/readme.md)
-[Food consumption data, original
-source](https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018)
+We downloaded the data on food consumption and CO2 emissions from Tidy
+Tuesday on Github, but that data came from another source, who
+originally got it from the Food and Agriculture Organization of the
+United Nations.
+
+  - [Food consumption data, tidy
+    format](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-18/readme.md)
+  - [Food consumption data,
+    source](https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018)
+  - [Food consumption data, original
+    source](http://www.fao.org/faostat/en/#data)
+
+We merged in some additional data on population, income, etc. from
+Gapminder.
+
+  - [Gapminder](https://www.gapminder.org/data/)
