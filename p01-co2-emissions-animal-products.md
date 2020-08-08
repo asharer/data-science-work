@@ -1071,7 +1071,7 @@ df_food_animal_bric %>%
     #  fct_reorder(food_category, desc(co2_emission_food)),
       consumption,
       group = country,
-      color = fct_reorder(country, food_animal_consumption_country)
+      color = fct_reorder(country, desc(food_animal_consumption_country))
     )
   ) + 
   scale_x_discrete(
@@ -1101,7 +1101,7 @@ df_food_animal_bric %>%
     aes(fct_reorder(food_category, desc(mean_co2_em_food_cohort)),
       co2_emission_food,
       group = country,
-      color = fct_reorder(country, food_animal_consumption_country)
+      color = fct_reorder(country, desc(food_animal_consumption_country))
     )
   ) + 
   scale_x_discrete(
@@ -1111,7 +1111,7 @@ df_food_animal_bric %>%
   labs(
     title = "Estimated CO2 emissions from animal product consumption by country",
     subtitle = "Select large countries",
-    x = "Food category, without Beef",
+    x = "Food category, without beef",
     y = "Estimated CO2 emissions from animal products per capita\n(kg/person/year)"
   ) +
   theme_minimal()
@@ -1130,7 +1130,7 @@ df_food_animal_bric %>%
     aes(fct_reorder(food_category, desc(mean_co2_em_food_cohort)),
       co2_emission_food,
       group = country,
-      color = fct_reorder(country, food_animal_consumption_country)
+      color = fct_reorder(country, desc(food_animal_consumption_country))
     )
   ) + 
   scale_x_discrete(
