@@ -204,6 +204,8 @@ df_food_animal_wide <-
     names_from = food_category,
     values_from = consumption
   )
+
+df_food_animal_wide
 ```
 
 
@@ -225,7 +227,8 @@ df_food_animal %>%
     title = "Animal product consumption and estimated resulting CO2 emissions per capita",
     x = "Estimated CO2 emissions per capita from animal products\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ```{r scatterplot of consumption and co2 by country and region}
@@ -244,7 +247,8 @@ df_food_animal %>%
     title = "Animal product consumption and resulting estimated CO2 emissions per capita",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 
 ```
 
@@ -264,7 +268,8 @@ df_food_animal_wide %>%
     title = "Animal product consumption and resulting estimated CO2 emissions per capita",
     x = "Est. CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 
 ```
 
@@ -286,7 +291,8 @@ df_food_animal_high_income %>%
     subtitle = "High income countries only",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 
 ```
 
@@ -308,7 +314,8 @@ df_food_animal_wide %>%
     subtitle = "High income countries only",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal products consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 
 ```
 
@@ -330,7 +337,8 @@ df_food_animal_wide %>%
     subtitle = "High income countries only",
     x = "Beef consumption per capita (kg/person/year)",
     y = "Estimated CO2 emissions from animal products\nper capita (kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 
 ```
 
@@ -346,7 +354,8 @@ df_food_animal %>%
     title = "Consumption per capita by food category, animal products only",
     x = "Food consumption per capita (kg/person/year)",
     y = "Food Category"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ```{r boxplot of consumption by food category, high income}
@@ -360,7 +369,8 @@ df_food_animal_high_income %>%
     subtitle = "High income countries only",
     x = "Food consumption per capita (kg/person/year)",
     y = "Food Category"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 
@@ -381,7 +391,8 @@ df_food_all %>%
     title = "Finland's food consumption per capita, select categories",
     x = "Food category",
     y = "Consumption per person per year"
-  )
+  ) + 
+  theme_minimal()
 
 ```
 
@@ -404,7 +415,8 @@ df_food_animal %>%
     title = "CO2 emissions per capita from animal products vs. overall",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 
 ```
 
@@ -424,7 +436,8 @@ df_food_animal_wide %>%
     title = "CO2 emissions per capita from animal products vs. overall",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 
@@ -446,12 +459,220 @@ df_food_animal_wide %>%
     subtitle = "High income countries only",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 
 
 
+
+
+```{r}
+
+df_food_animal_high_income %>%
+  filter(
+    food_animal_consumption_country > 375 & 
+    food_animal_consumption_country < 415 &
+    food_category != "Milk - inc. cheese" &
+    food_category != "Eggs" 
+  ) %>%
+  group_by(food_category) %>%
+  mutate(
+    mean_consumption_cohort = mean(consumption),
+    mean_co2_em_food_cohort = mean(co2_emission_food)
+  ) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_line(
+    aes(fct_reorder(food_category, desc(co2_emission_food)),
+      consumption,
+      group = country,
+      color = fct_reorder(country, food_animal_consumption_country)
+    )
+  ) + 
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  scale_color_discrete(name = "Country") +
+  labs(
+    title = "Animal product consumption by country",
+    subtitle = "Countries consuming similar amounts of animal products per capita",
+    x = "Food category",
+    y = "Consumption per capita (kg/person/year)"
+  ) +
+  theme_minimal()
+
+
+df_food_animal_high_income
+
+```
+
+
+
+```{r}
+
+df_food_animal_high_income %>%
+  filter(
+    food_animal_consumption_country > 375 & 
+    food_animal_consumption_country < 415 &
+    food_category != "Milk - inc. cheese" &
+    food_category != "Eggs" 
+  ) %>%
+  group_by(food_category) %>%
+  mutate(
+    mean_consumption_cohort = mean(consumption),
+    mean_co2_em_food_cohort = mean(co2_emission_food)
+  ) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_line(
+    aes(fct_reorder(food_category, desc(mean_co2_em_food_cohort)),
+      co2_emission_food,
+      group = country,
+      color = fct_reorder(country, food_animal_consumption_country)
+    )
+  ) + 
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  scale_color_discrete(name = "Country") +
+  labs(
+    title = "Estimated CO2 emissions from animal product consumption by country",
+    subtitle = "Countries consuming similar amounts of animal products per capita",
+    x = "Food category",
+    y = "Estimated CO2 emissions from animal products per capita (kg/person/year)"
+  ) +
+  theme_minimal()
+
+
+df_food_animal_high_income
+
+```
+
+
+
+
+
+```{r scatterplot of beef vs. other meat consumption by country, high income}
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Pork, 
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Pork consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Pork consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Poultry, 
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Poultry consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Poultry consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Fish, 
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Fish consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Fish consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+
+
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      `Lamb & Goat`,
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Lamb & Goat consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Lamb & Goat consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+
+
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Eggs,
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Eggs consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Eggs consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+
+
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      `Milk - inc. cheese`,
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Dairy consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Dairy consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+
+```
 
 
 

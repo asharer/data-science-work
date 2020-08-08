@@ -450,7 +450,27 @@ df_food_animal_wide <-
     names_from = food_category,
     values_from = consumption
   )
+
+df_food_animal_wide
 ```
+
+    ## # A tibble: 130 x 14
+    ##    region country population income_grp total_co2_emiss… co2_food_animal…
+    ##    <chr>  <chr>        <dbl> <chr>                 <dbl>            <dbl>
+    ##  1 Latin… Argent…   42600000 Upper mid…             4790            2141.
+    ##  2 East … Austra…   23600000 High inco…            15300            1896.
+    ##  3 Europ… Albania    2900000 Upper mid…             1970            1734.
+    ##  4 Europ… Iceland     329000 High inco…             6040            1706.
+    ##  5 East … New Ze…    4570000 High inco…             7590            1710.
+    ##  6 Latin… Uruguay    3400000 High inco…             1980            1598.
+    ##  7 Europ… Luxemb…     555000 High inco…            17400            1572.
+    ##  8 Latin… Brazil   203000000 Upper mid…             2610            1563.
+    ##  9 Europ… Kazakh…   17300000 Upper mid…            14400            1539.
+    ## 10 Europ… Sweden     9690000 High inco…             4480            1493.
+    ## # … with 120 more rows, and 8 more variables:
+    ## #   food_animal_consumption_country <dbl>, Pork <dbl>, Poultry <dbl>,
+    ## #   Beef <dbl>, `Lamb & Goat` <dbl>, Fish <dbl>, Eggs <dbl>, `Milk - inc.
+    ## #   cheese` <dbl>
 
 ## Analysis
 
@@ -470,7 +490,8 @@ df_food_animal %>%
     title = "Animal product consumption and estimated resulting CO2 emissions per capita",
     x = "Estimated CO2 emissions per capita from animal products\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20income%20group-1.png)<!-- -->
@@ -491,7 +512,8 @@ df_food_animal %>%
     title = "Animal product consumption and resulting estimated CO2 emissions per capita",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20region-1.png)<!-- -->
@@ -512,7 +534,8 @@ df_food_animal_wide %>%
     title = "Animal product consumption and resulting estimated CO2 emissions per capita",
     x = "Est. CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20Beef%20consumption-1.png)<!-- -->
@@ -534,7 +557,8 @@ df_food_animal_high_income %>%
     subtitle = "High income countries only",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal product consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20region,%20high%20income-1.png)<!-- -->
@@ -556,7 +580,8 @@ df_food_animal_wide %>%
     subtitle = "High income countries only",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Animal products consumption per capita\n(kg/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20consumption%20and%20co2%20by%20country%20and%20beef%20consumption,%20high%20income-1.png)<!-- -->
@@ -578,7 +603,8 @@ df_food_animal_wide %>%
     subtitle = "High income countries only",
     x = "Beef consumption per capita (kg/person/year)",
     y = "Estimated CO2 emissions from animal products\nper capita (kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20consumption%20and%20co2%20by%20country,%20high%20income-1.png)<!-- -->
@@ -591,7 +617,8 @@ df_food_animal %>%
     title = "Consumption per capita by food category, animal products only",
     x = "Food consumption per capita (kg/person/year)",
     y = "Food Category"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/boxplot%20of%20consumption%20by%20food%20category-1.png)<!-- -->
@@ -607,7 +634,8 @@ df_food_animal_high_income %>%
     subtitle = "High income countries only",
     x = "Food consumption per capita (kg/person/year)",
     y = "Food Category"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/boxplot%20of%20consumption%20by%20food%20category,%20high%20income-1.png)<!-- -->
@@ -646,7 +674,8 @@ df_food_all %>%
     title = "Finland's food consumption per capita, select categories",
     x = "Food category",
     y = "Consumption per person per year"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/dairy;%20Finland-1.png)<!-- -->
@@ -668,7 +697,8 @@ df_food_animal %>%
     title = "CO2 emissions per capita from animal products vs. overall",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/food%20emissions%20vs.%20total%20emissions-1.png)<!-- -->
@@ -689,7 +719,8 @@ df_food_animal_wide %>%
     title = "CO2 emissions per capita from animal products vs. overall",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/food%20emissions%20vs.%20total%20emissions,%20beef%20consumption-1.png)<!-- -->
@@ -712,10 +743,267 @@ df_food_animal_wide %>%
     subtitle = "High income countries only",
     x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
     y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
-  )
+  ) + 
+  theme_minimal()
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/food%20emissions%20vs.%20total%20emissions,%20beef%20consumption,%20high%20income-1.png)<!-- -->
+
+``` r
+df_food_animal_high_income %>%
+  filter(
+    food_animal_consumption_country > 375 & 
+    food_animal_consumption_country < 415 &
+    food_category != "Milk - inc. cheese" &
+    food_category != "Eggs" 
+  ) %>%
+  group_by(food_category) %>%
+  mutate(
+    mean_consumption_cohort = mean(consumption),
+    mean_co2_em_food_cohort = mean(co2_emission_food)
+  ) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_line(
+    aes(fct_reorder(food_category, desc(co2_emission_food)),
+      consumption,
+      group = country,
+      color = fct_reorder(country, food_animal_consumption_country)
+    )
+  ) + 
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  scale_color_discrete(name = "Country") +
+  labs(
+    title = "Animal product consumption by country",
+    subtitle = "Countries consuming similar amounts of animal products per capita",
+    x = "Food category",
+    y = "Consumption per capita (kg/person/year)"
+  ) +
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+``` r
+df_food_animal_high_income
+```
+
+    ## # A tibble: 315 x 12
+    ##    region country population income_grp food_category consumption
+    ##    <chr>  <chr>        <dbl> <chr>      <chr>               <dbl>
+    ##  1 East … Austra…   23600000 High inco… Pork                24.1 
+    ##  2 East … Austra…   23600000 High inco… Poultry             46.1 
+    ##  3 East … Austra…   23600000 High inco… Beef                33.9 
+    ##  4 East … Austra…   23600000 High inco… Lamb & Goat          9.87
+    ##  5 East … Austra…   23600000 High inco… Fish                17.7 
+    ##  6 East … Austra…   23600000 High inco… Eggs                 8.51
+    ##  7 East … Austra…   23600000 High inco… Milk - inc. …      234.  
+    ##  8 Europ… Iceland     329000 High inco… Pork                21.7 
+    ##  9 Europ… Iceland     329000 High inco… Poultry             26.9 
+    ## 10 Europ… Iceland     329000 High inco… Beef                13.4 
+    ## # … with 305 more rows, and 6 more variables: co2_emission_food <dbl>,
+    ## #   total_co2_emissions <dbl>, co2_food_animal_country <dbl>,
+    ## #   food_animal_consumption_country <dbl>, mean_consumption_cat <dbl>,
+    ## #   mean_consumption_cat_hi <dbl>
+
+``` r
+df_food_animal_high_income %>%
+  filter(
+    food_animal_consumption_country > 375 & 
+    food_animal_consumption_country < 415 &
+    food_category != "Milk - inc. cheese" &
+    food_category != "Eggs" 
+  ) %>%
+  group_by(food_category) %>%
+  mutate(
+    mean_consumption_cohort = mean(consumption),
+    mean_co2_em_food_cohort = mean(co2_emission_food)
+  ) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_line(
+    aes(fct_reorder(food_category, desc(mean_co2_em_food_cohort)),
+      co2_emission_food,
+      group = country,
+      color = fct_reorder(country, food_animal_consumption_country)
+    )
+  ) + 
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  scale_color_discrete(name = "Country") +
+  labs(
+    title = "Estimated CO2 emissions from animal product consumption by country",
+    subtitle = "Countries consuming similar amounts of animal products per capita",
+    x = "Food category",
+    y = "Estimated CO2 emissions from animal products per capita (kg/person/year)"
+  ) +
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+df_food_animal_high_income
+```
+
+    ## # A tibble: 315 x 12
+    ##    region country population income_grp food_category consumption
+    ##    <chr>  <chr>        <dbl> <chr>      <chr>               <dbl>
+    ##  1 East … Austra…   23600000 High inco… Pork                24.1 
+    ##  2 East … Austra…   23600000 High inco… Poultry             46.1 
+    ##  3 East … Austra…   23600000 High inco… Beef                33.9 
+    ##  4 East … Austra…   23600000 High inco… Lamb & Goat          9.87
+    ##  5 East … Austra…   23600000 High inco… Fish                17.7 
+    ##  6 East … Austra…   23600000 High inco… Eggs                 8.51
+    ##  7 East … Austra…   23600000 High inco… Milk - inc. …      234.  
+    ##  8 Europ… Iceland     329000 High inco… Pork                21.7 
+    ##  9 Europ… Iceland     329000 High inco… Poultry             26.9 
+    ## 10 Europ… Iceland     329000 High inco… Beef                13.4 
+    ## # … with 305 more rows, and 6 more variables: co2_emission_food <dbl>,
+    ## #   total_co2_emissions <dbl>, co2_food_animal_country <dbl>,
+    ## #   food_animal_consumption_country <dbl>, mean_consumption_cat <dbl>,
+    ## #   mean_consumption_cat_hi <dbl>
+
+``` r
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Pork, 
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Pork consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Pork consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20vs.%20other%20meat%20consumption%20by%20country,%20high%20income-1.png)<!-- -->
+
+``` r
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Poultry, 
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Poultry consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Poultry consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20vs.%20other%20meat%20consumption%20by%20country,%20high%20income-2.png)<!-- -->
+
+``` r
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Fish, 
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Fish consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Fish consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20vs.%20other%20meat%20consumption%20by%20country,%20high%20income-3.png)<!-- -->
+
+``` r
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      `Lamb & Goat`,
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Lamb & Goat consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Lamb & Goat consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20vs.%20other%20meat%20consumption%20by%20country,%20high%20income-4.png)<!-- -->
+
+``` r
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      Eggs,
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Eggs consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Eggs consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20vs.%20other%20meat%20consumption%20by%20country,%20high%20income-5.png)<!-- -->
+
+``` r
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      `Milk - inc. cheese`,
+      color = co2_food_animal_country
+    )
+  ) +
+  scale_color_continuous(name = "Est. CO2 emissions from\nanimal products per capita\n(kg CO2/person/year)") +
+  labs(
+    title = "Beef and Dairy consumption per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Dairy consumption per capita (kg/person/year)"
+  ) + 
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20vs.%20other%20meat%20consumption%20by%20country,%20high%20income-6.png)<!-- -->
 
 *Other ideas for graphs:* - Worst emitters breakdown - Lowest emitters
 breakdown - Milk vs. GDP? - co2 emissions vs. gdp
