@@ -750,7 +750,8 @@ df_food_animal_wide %>%
 ![](p01-co2-emissions-animal-products_files/figure-gfm/food%20emissions%20vs.%20total%20emissions,%20beef%20consumption,%20high%20income-1.png)<!-- -->
 
 ``` r
-df_food_animal_high_income %>%
+df_food_animal_cohort <-
+  df_food_animal_high_income %>%
   filter(
     food_animal_consumption_country > 375 & 
     food_animal_consumption_country < 415 &
@@ -762,10 +763,14 @@ df_food_animal_high_income %>%
     mean_consumption_cohort = mean(consumption),
     mean_co2_em_food_cohort = mean(co2_emission_food)
   ) %>%
-  ungroup() %>%
+  ungroup() 
+  
+df_food_animal_cohort %>%
   ggplot() +
   geom_line(
-    aes(fct_reorder(food_category, desc(co2_emission_food)),
+    aes(
+      fct_relevel(food_category, "Beef", "Lamb & Goat", "Pork", "Fish", "Poultry"),
+    #  fct_reorder(food_category, desc(co2_emission_food)),
       consumption,
       group = country,
       color = fct_reorder(country, food_animal_consumption_country)
@@ -787,26 +792,27 @@ df_food_animal_high_income %>%
 ![](p01-co2-emissions-animal-products_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
-df_food_animal_high_income
+df_food_animal_cohort 
 ```
 
-    ## # A tibble: 315 x 12
+    ## # A tibble: 35 x 14
     ##    region country population income_grp food_category consumption
     ##    <chr>  <chr>        <dbl> <chr>      <chr>               <dbl>
-    ##  1 East … Austra…   23600000 High inco… Pork                24.1 
-    ##  2 East … Austra…   23600000 High inco… Poultry             46.1 
-    ##  3 East … Austra…   23600000 High inco… Beef                33.9 
-    ##  4 East … Austra…   23600000 High inco… Lamb & Goat          9.87
-    ##  5 East … Austra…   23600000 High inco… Fish                17.7 
-    ##  6 East … Austra…   23600000 High inco… Eggs                 8.51
-    ##  7 East … Austra…   23600000 High inco… Milk - inc. …      234.  
-    ##  8 Europ… Iceland     329000 High inco… Pork                21.7 
-    ##  9 Europ… Iceland     329000 High inco… Poultry             26.9 
-    ## 10 Europ… Iceland     329000 High inco… Beef                13.4 
-    ## # … with 305 more rows, and 6 more variables: co2_emission_food <dbl>,
+    ##  1 Europ… Iceland     329000 High inco… Pork                21.7 
+    ##  2 Europ… Iceland     329000 High inco… Poultry             26.9 
+    ##  3 Europ… Iceland     329000 High inco… Beef                13.4 
+    ##  4 Europ… Iceland     329000 High inco… Lamb & Goat         21.1 
+    ##  5 Europ… Iceland     329000 High inco… Fish                74.4 
+    ##  6 Europ… Luxemb…     555000 High inco… Pork                43.6 
+    ##  7 Europ… Luxemb…     555000 High inco… Poultry             21.4 
+    ##  8 Europ… Luxemb…     555000 High inco… Beef                29.9 
+    ##  9 Europ… Luxemb…     555000 High inco… Lamb & Goat          1.67
+    ## 10 Europ… Luxemb…     555000 High inco… Fish                23.1 
+    ## # … with 25 more rows, and 8 more variables: co2_emission_food <dbl>,
     ## #   total_co2_emissions <dbl>, co2_food_animal_country <dbl>,
     ## #   food_animal_consumption_country <dbl>, mean_consumption_cat <dbl>,
-    ## #   mean_consumption_cat_hi <dbl>
+    ## #   mean_consumption_cat_hi <dbl>, mean_consumption_cohort <dbl>,
+    ## #   mean_co2_em_food_cohort <dbl>
 
 ``` r
 df_food_animal_high_income %>%
