@@ -227,8 +227,8 @@ df_food_pop %>%
 ```{r food emissions vs. total emissions}
 df_food_pop %>%
   ggplot() +
-  geom_point(aes(co2_food_country, total_co2_emissions, color = region), na.rm = TRUE) +
-  scale_color_discrete(name = "Region") +
+  geom_point(aes(co2_food_country, total_co2_emissions, color = income_grp), na.rm = TRUE) +
+  scale_color_discrete(name = "Income level") +
   #coord_trans(x = "log", y = "log") +
   labs(
     title = "CO2 emissions per capita from food vs. overall",
@@ -307,11 +307,16 @@ The internet claims Finns drink a lot of milk. Interesting.
 
 
 *Other ideas for graphs:*
+TO DO: filter by meat and eggs and milk; focus on high income
 
+
+- undernourished children? (nah)
 - Milk vs. GDP
 - Rice vs. GDP
 - Worst emitters breakdown
 - Lowest emitters breakdown
+- Malnutrition, esp BRIC countries and USA
+- co2 emissions vs. gdp
 
 
 

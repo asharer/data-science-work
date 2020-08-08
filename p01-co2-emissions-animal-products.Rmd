@@ -1,0 +1,477 @@
+---
+title: "Team Zeta Project 1"
+author: "Angela Sharer"
+date: 2020-08-03
+output:
+  github_document:
+    toc: true
+---
+
+# Food Consumption and CO2 Emissions
+Team Zeta Project 1
+
+## Setup
+
+```{r setup}
+library(tidyverse)
+library(scales)
+
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+
+gapminder_pop_total <- read_csv("./data/population_total.csv")
+
+gapminder_geo <- read_csv("./data/countries_gapminder.csv")
+
+gapminder_emissions <- read_csv("./data/co2_emissions_tonnes_per_person.csv")
+
+```
+
+
+```{r examining data sets}
+food_consumption
+
+gapminder_pop_total
+
+gapminder_geo
+
+gapminder_emissions
+```
+
+## Data Wrangling
+
+```{r gapminder wrangling}
+gapminder_pop_2014 <-
+  gapminder_pop_total %>%
+  select("country", "population" = "2014")
+
+gapminder_pop_2014
+
+gapminder_geo_select <-
+  gapminder_geo %>%
+  select(
+    "country" = "name", 
+    "region" = "World bank region", 
+    "income_grp" = "World bank, 4 income groups 2017"
+  )
+
+gapminder_geo_select
+
+gapminder_emissions_2014 <-
+  gapminder_emissions %>%
+  select("country", "total_co2_tonnes" = "2014") %>%
+  mutate(total_co2_emissions = total_co2_tonnes * 1000) %>%
+  select("country", "total_co2_emissions")
+
+gapminder_emissions_2014
+
+```
+
+```{r food_consumption wrangling - fixing countries}
+## First, I'm fixing the USA
+food_consumption_US_only <-
+  food_consumption %>%
+  filter(country == "USA") %>%
+  select(-country) %>%
+  mutate(country = "United States") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Next, I'm fixing Hong Kong
+food_consumption_HK_only <-
+  food_consumption %>%
+  filter(country == "Hong Kong SAR. China") %>%
+  select(-country) %>%
+  mutate(country = "Hong Kong, China") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Next, I'm fixing Taiwan
+food_consumption_TW_only <-
+  food_consumption %>%
+  filter(country == "Taiwan. ROC") %>%
+  select(-country) %>%
+  mutate(country = "Taiwan") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Macedonia (Macedonia, FYR in gapminder)
+food_consumption_Macedonia_only <-
+  food_consumption %>%
+  filter(country == "Macedonia") %>%
+  select(-country) %>%
+  mutate(country = "Macedonia, FYR") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+## Congo, Rep.
+food_consumption_CongoRep_only <-
+  food_consumption %>%
+  filter(country == "Congo") %>%
+  select(-country) %>%
+  mutate(country = "Congo, Rep.") %>%
+  select(country, food_category, consumption, co2_emmission)
+
+
+## Now, I'm binding them all together!
+food_consumption_mod <-
+  food_consumption %>%
+  filter(
+    country != "USA" &
+    country != "Hong Kong SAR. China" &
+    country != "Taiwan. ROC" &
+    country != "Macedonia" &
+    country != "Congo"
+  ) %>%
+  bind_rows(
+    food_consumption_US_only,
+    food_consumption_HK_only,
+    food_consumption_TW_only,
+    food_consumption_Macedonia_only,
+    food_consumption_CongoRep_only
+    )
+```
+
+```{r food_consumption wrangling - joining with gapminder}
+df_food_all <-
+  food_consumption_mod %>%
+  left_join(gapminder_pop_2014, by = "country") %>%
+  left_join(gapminder_geo_select, by = "country") %>%
+  left_join(gapminder_emissions_2014, by = "country") %>%
+  group_by(country) %>%
+  mutate(
+    co2_food_country = sum(co2_emmission), 
+    food_consumption_country = sum(consumption)
+  ) %>%
+  ungroup() %>%
+  select(
+    region,
+    country,
+    population,
+    income_grp,
+    food_category,
+    consumption,
+    food_consumption_country,
+    "co2_emission_food" = co2_emmission,
+    co2_food_country,
+    total_co2_emissions
+  )
+
+df_food_all
+
+#View(df_food_all[is.na(df_food_all$region),])
+## Gapminder is missing these countries, which are present in food_consumption:
+## Bermuda, French Polynesia, New Caledonia, Slovakia
+```
+
+Based on some initial explorations, we decided to focus on animal products only.
+
+```{r}
+df_food_animal <-
+  df_food_all %>%
+  select(-co2_food_country, -food_consumption_country) %>%
+  filter(
+    food_category %in% c(
+      "Beef", "Fish", "Lamb & Goat", "Pork", "Poultry", 
+      "Eggs", "Milk - inc. cheese"
+    ) 
+  ) %>%
+  group_by(country) %>%
+  mutate(
+    co2_food_animal_country = sum(co2_emission_food), 
+    food_animal_consumption_country = sum(consumption)
+  ) %>%
+  ungroup() %>%
+  group_by(food_category) %>%
+  mutate(
+    mean_consumption_cat = mean(consumption)
+  ) %>%
+  ungroup()
+
+## We will mostly focus in on wealthy countries only, but I wanted to preserve the full income range first, to make some visualiziations that will situate those countries relative to the others.
+df_food_animal_high_income <-
+  df_food_animal %>%
+  filter(income_grp == "High income") %>%
+  group_by(food_category) %>%
+  mutate(
+    mean_consumption_cat_hi = mean(consumption)
+  ) %>%
+  ungroup()
+
+```
+
+```{r pivoting our animal dataframes to be wider}
+
+df_food_animal_wide <-
+  df_food_animal %>%
+  select(-co2_emission_food, -mean_consumption_cat) %>%
+  pivot_wider(
+    names_from = food_category,
+    values_from = consumption
+  )
+```
+
+
+## Analysis
+
+```{r scatterplot of consumption and co2 by country and income group}
+df_food_animal %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      food_animal_consumption_country, 
+      color = fct_reorder(income_grp, desc(consumption))
+    )
+  ) +
+  scale_color_discrete(name = "Country's income level") +
+  labs(
+    title = "Animal product consumption and estimated resulting CO2 emissions per capita",
+    x = "Estimated CO2 emissions per capita from animal products\n(kg CO2/person/year)",
+    y = "Animal product consumption per capita\n(kg/person/year)"
+  )
+```
+
+```{r scatterplot of consumption and co2 by country and region}
+df_food_animal %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      food_animal_consumption_country, 
+      color = region
+    )
+  ) +
+  scale_color_discrete(name = "Region") +
+  labs(
+    title = "Animal product consumption and resulting estimated CO2 emissions per capita",
+    x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
+    y = "Animal product consumption per capita\n(kg/person/year)"
+  )
+
+```
+
+```{r scatterplot of consumption and co2 by country and Beef consumption}
+df_food_animal_wide %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      food_animal_consumption_country, 
+      color = Beef
+    )
+  ) +
+  scale_color_continuous(name = "Beef consumption\n(kg/person/year)") +
+  labs(
+    title = "Animal product consumption and resulting estimated CO2 emissions per capita",
+    x = "Est. CO2 emissions from animal products per capita\n(kg CO2/person/year)",
+    y = "Animal product consumption per capita\n(kg/person/year)"
+  )
+
+```
+
+
+```{r scatterplot of consumption and co2 by country and region, high income}
+df_food_animal_high_income %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      food_animal_consumption_country, 
+      color = region
+    )
+  ) +
+  scale_color_discrete(name = "Region") +
+  labs(
+    title = "Animal products consumption and resulting est. CO2 emissions per capita",
+    subtitle = "High income countries only",
+    x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
+    y = "Animal product consumption per capita\n(kg/person/year)"
+  )
+
+```
+
+
+```{r scatterplot of consumption and co2 by country and beef consumption, high income}
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      food_animal_consumption_country, 
+      color = Beef
+    )
+  ) +
+  scale_color_continuous(name = "Beef consumption\n(kg/person/year)") +
+  labs(
+    title = "Animal products consumption and resulting estimated CO2 emissions per capita",
+    subtitle = "High income countries only",
+    x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
+    y = "Animal products consumption per capita\n(kg/person/year)"
+  )
+
+```
+
+
+```{r scatterplot of beef consumption and co2 by country, high income}
+df_food_animal_wide %>%
+  filter(!is.na(region) & income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      Beef,
+      co2_food_animal_country, 
+      color = Beef
+    )
+  ) +
+  scale_color_continuous(name = "Beef consumption\n(kg/person/year)") +
+  labs(
+    title = "Beef consumption and estimated CO2 emissions from animal products per capita",
+    subtitle = "High income countries only",
+    x = "Beef consumption per capita (kg/person/year)",
+    y = "Estimated CO2 emissions from animal products\nper capita (kg CO2/person/year)"
+  )
+
+```
+
+
+
+
+
+```{r boxplot of consumption by food category}
+df_food_animal %>%
+  ggplot() +
+  geom_boxplot(aes(consumption, fct_reorder(food_category, mean_consumption_cat))) +
+  labs(
+    title = "Consumption per capita by food category, animal products only",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+
+```{r boxplot of consumption by food category, high income}
+df_food_animal_high_income %>%
+  ggplot() +
+  geom_boxplot(
+    aes(consumption, fct_reorder(food_category, mean_consumption_cat_hi))
+  ) +
+  labs(
+    title = "Consumption per capita by food category, animal products only",
+    subtitle = "High income countries only",
+    x = "Food consumption per capita (kg/person/year)",
+    y = "Food Category"
+  )
+```
+
+
+```{r dairy; Finland}
+
+df_food_all %>%
+  filter(food_category == "Milk - inc. cheese") %>%
+  arrange(desc(consumption))
+
+df_food_all %>%
+  filter(country == "Finland") %>%
+  ggplot() +
+  geom_col(aes(fct_reorder(food_category, desc(consumption)), consumption)) +
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  labs(
+    title = "Finland's food consumption per capita, select categories",
+    x = "Food category",
+    y = "Consumption per person per year"
+  )
+
+```
+
+
+
+```{r food emissions vs. total emissions}
+df_food_animal %>%
+  filter(!is.na(income_grp)) %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      total_co2_emissions, 
+      color = fct_reorder(income_grp, desc(consumption))
+    ), na.rm = TRUE
+  ) +
+  scale_color_discrete(name = "Country's income level") +
+  #coord_trans(x = "log", y = "log") +
+  labs(
+    title = "CO2 emissions per capita from animal products vs. overall",
+    x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
+    y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
+  )
+
+```
+
+```{r food emissions vs. total emissions, beef consumption}
+df_food_animal_wide %>%
+  filter(!is.na(income_grp)) %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      total_co2_emissions, 
+      color = Beef,
+    ), na.rm = TRUE
+  ) +
+  scale_color_continuous(name = "Beef consumption\n(kg/person/year)") +
+  labs(
+    title = "CO2 emissions per capita from animal products vs. overall",
+    x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
+    y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
+  )
+```
+
+
+```{r food emissions vs. total emissions, beef consumption, high income}
+df_food_animal_wide %>%
+  filter(!is.na(income_grp)) %>%
+  filter(income_grp == "High income") %>%
+  ggplot() +
+  geom_point(
+    aes(
+      co2_food_animal_country, 
+      total_co2_emissions, 
+      color = Beef,
+    ), na.rm = TRUE
+  ) +
+  scale_color_continuous(name = "Beef consumption\n(kg/person/year)") +
+  labs(
+    title = "CO2 emissions per capita from animal products vs. overall",
+    subtitle = "High income countries only",
+    x = "Estimated CO2 emissions from animal products per capita\n(kg CO2/person/year)",
+    y = "Total CO2 emissions per capita\n(kg CO2/person/year)"
+  )
+```
+
+
+
+
+
+
+
+
+*Other ideas for graphs:*
+- Worst emitters breakdown
+- Lowest emitters breakdown
+- Milk vs. GDP?
+- co2 emissions vs. gdp
+
+
+
+# Sources
+
+We downloaded the data on food consumption and CO2 emissions from Tidy Tuesday on Github, but that data came from another source, who originally got it from the Food and Agriculture Organization of the United Nations.
+
+- [Food consumption data, tidy format](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-18/readme.md)
+- [Food consumption data, source](https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018)
+- [Food consumption data, original source](http://www.fao.org/faostat/en/#data)
+
+We merged in some additional data on population, income, etc. from Gapminder.
+
+- [Gapminder](https://www.gapminder.org/data/)
