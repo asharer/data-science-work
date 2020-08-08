@@ -8,6 +8,8 @@ Angela Sharer
       - [Setup](#setup)
       - [Data Wrangling](#data-wrangling)
       - [Analysis](#analysis)
+          - [Graphs for James’ BRIC
+            countries](#graphs-for-james-bric-countries)
   - [Sources](#sources)
 
 # Food Consumption and CO2 Emissions
@@ -1041,6 +1043,110 @@ df_food_animal_wide %>%
 ```
 
 ![](p01-co2-emissions-animal-products_files/figure-gfm/scatterplot%20of%20beef%20vs.%20other%20meat%20consumption%20by%20country,%20high%20income-6.png)<!-- -->
+
+### Graphs for James’ BRIC countries
+
+``` r
+df_food_animal_bric <-
+  df_food_animal %>%
+  filter(
+    country %in% c("United States", "Russia", "Brazil", "India", "China")
+  ) %>%
+  group_by(food_category) %>%
+  mutate(
+    mean_consumption_cohort = mean(consumption),
+    mean_co2_em_food_cohort = mean(co2_emission_food)
+  ) %>%
+  ungroup() 
+  
+df_food_animal_bric %>%
+  filter(   
+    food_category != "Milk - inc. cheese" &
+    food_category != "Eggs" 
+  ) %>%
+  ggplot() +
+  geom_line(
+    aes(
+      fct_relevel(food_category, "Beef", "Lamb & Goat", "Pork", "Fish", "Poultry"),
+    #  fct_reorder(food_category, desc(co2_emission_food)),
+      consumption,
+      group = country,
+      color = fct_reorder(country, food_animal_consumption_country)
+    )
+  ) + 
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  scale_color_discrete(name = "Country") +
+  labs(
+    title = "Animal product consumption by country",
+    subtitle = "Select large countries",
+    x = "Food category",
+    y = "Consumption per capita (kg/person/year)"
+  ) +
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/BRIC-1.png)<!-- -->
+
+``` r
+df_food_animal_bric %>%
+  filter(
+    food_category != "Milk - inc. cheese" &
+    food_category != "Eggs" &
+    food_category != "Beef"
+  ) %>%
+  ggplot() +
+  geom_line(
+    aes(fct_reorder(food_category, desc(mean_co2_em_food_cohort)),
+      co2_emission_food,
+      group = country,
+      color = fct_reorder(country, food_animal_consumption_country)
+    )
+  ) + 
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  scale_color_discrete(name = "Country") +
+  labs(
+    title = "Estimated CO2 emissions from animal product consumption by country",
+    subtitle = "Select large countries",
+    x = "Food category, without Beef",
+    y = "Estimated CO2 emissions from animal products per capita\n(kg/person/year)"
+  ) +
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/BRIC-2.png)<!-- -->
+
+``` r
+df_food_animal_bric %>%
+  filter(
+    food_category != "Milk - inc. cheese" &
+    food_category != "Eggs" 
+  ) %>%
+  ggplot() +
+  geom_line(
+    aes(fct_reorder(food_category, desc(mean_co2_em_food_cohort)),
+      co2_emission_food,
+      group = country,
+      color = fct_reorder(country, food_animal_consumption_country)
+    )
+  ) + 
+  scale_x_discrete(
+    labels = function(food_category) str_wrap(food_category, width = 10)
+  ) +
+  scale_color_discrete(name = "Country") +
+  labs(
+    title = "Estimated CO2 emissions from animal product consumption by country",
+    subtitle = "Select large countries",
+    x = "Food category",
+    y = "Estimated CO2 emissions from animal products per capita\n(kg/person/year)"
+  ) +
+  theme_minimal()
+```
+
+![](p01-co2-emissions-animal-products_files/figure-gfm/BRIC-3.png)<!-- -->
 
 *Other ideas for graphs:* - Worst emitters breakdown - Lowest emitters
 breakdown - Milk vs. GDP? - co2 emissions vs. gdp
