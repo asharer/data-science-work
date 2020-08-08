@@ -470,7 +470,8 @@ df_food_animal_wide %>%
 
 ```{r}
 
-df_food_animal_high_income %>%
+df_food_animal_cohort <-
+  df_food_animal_high_income %>%
   filter(
     food_animal_consumption_country > 375 & 
     food_animal_consumption_country < 415 &
@@ -482,10 +483,14 @@ df_food_animal_high_income %>%
     mean_consumption_cohort = mean(consumption),
     mean_co2_em_food_cohort = mean(co2_emission_food)
   ) %>%
-  ungroup() %>%
+  ungroup() 
+  
+df_food_animal_cohort %>%
   ggplot() +
   geom_line(
-    aes(fct_reorder(food_category, desc(co2_emission_food)),
+    aes(
+      fct_relevel(food_category, "Beef", "Lamb & Goat", "Pork", "Fish", "Poultry"),
+    #  fct_reorder(food_category, desc(co2_emission_food)),
       consumption,
       group = country,
       color = fct_reorder(country, food_animal_consumption_country)
@@ -503,8 +508,7 @@ df_food_animal_high_income %>%
   ) +
   theme_minimal()
 
-
-df_food_animal_high_income
+df_food_animal_cohort 
 
 ```
 
@@ -541,7 +545,7 @@ df_food_animal_high_income %>%
     title = "Estimated CO2 emissions from animal product consumption by country",
     subtitle = "Countries consuming similar amounts of animal products per capita",
     x = "Food category",
-    y = "Estimated CO2 emissions from animal products per capita (kg/person/year)"
+    y = "Estimated CO2 emissions from animal products per capita\n(kg/person/year)"
   ) +
   theme_minimal()
 

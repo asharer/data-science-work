@@ -838,7 +838,7 @@ df_food_animal_high_income %>%
     title = "Estimated CO2 emissions from animal product consumption by country",
     subtitle = "Countries consuming similar amounts of animal products per capita",
     x = "Food category",
-    y = "Estimated CO2 emissions from animal products per capita (kg/person/year)"
+    y = "Estimated CO2 emissions from animal products per capita\n(kg/person/year)"
   ) +
   theme_minimal()
 ```
